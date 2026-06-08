@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arbeitsblätter – Übersicht</title>
+<style>
+  :root{
+    --orange:#ff7a18; --orange-d:#e85d04; --blau:#1e72d6; --tinte:#222;
+    --linie:#e2dccd; --grau:#f4f1ea; --gruen:#2e9e5b;
+  }
+  *{box-sizing:border-box}
+  body{font-family:"Segoe UI",system-ui,Arial,sans-serif; color:var(--tinte); margin:0; background:#fbf9f4; line-height:1.5;}
+  .wrap{max-width:860px; margin:0 auto; padding:24px 18px 60px;}
+  header.titel{background:linear-gradient(120deg,#ff7a18,#e85d04); color:#fff; border-radius:18px; padding:24px 26px; margin-bottom:18px; box-shadow:0 6px 16px rgba(232,93,4,.25);}
+  header.titel h1{margin:0 0 4px; font-size:1.7rem;}
+  header.titel p{margin:0; opacity:.95;}
+  .toolbar{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:10px 2px 18px; font-size:.92rem;}
+  .toolbar label{color:#666;}
+  .toolbar select, .toolbar input{padding:6px 10px; border:1px solid var(--linie); border-radius:8px; font-size:.92rem; background:#fff;}
+  .gruppe{margin-bottom:22px;}
+  .gruppe h2{display:flex; align-items:center; gap:10px; font-size:1.2rem; color:var(--orange-d); border-bottom:3px solid var(--orange); padding-bottom:6px; margin:18px 0 12px;}
+  .gruppe h2 .kpill{background:var(--orange); color:#fff; border-radius:20px; padding:2px 12px; font-size:.85rem;}
+  .karte{display:flex; justify-content:space-between; align-items:center; gap:14px; background:#fff; border:1px solid var(--linie); border-radius:14px; padding:14px 18px; margin:10px 0; box-shadow:0 2px 6px rgba(0,0,0,.04); text-decoration:none; color:inherit; transition:transform .08s, box-shadow .15s;}
+  .karte:hover{transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,.10); border-color:#ffd2a6;}
+  .karte .info h3{margin:0 0 3px; font-size:1.06rem; color:var(--tinte);}
+  .karte .info p{margin:0; font-size:.9rem; color:#666;}
+  .karte .meta{flex:0 0 auto; text-align:right; font-size:.82rem; color:#8a8170;}
+  .karte .fach{display:inline-block; background:#eef7ff; color:var(--blau); font-weight:700; font-size:.74rem; padding:2px 9px; border-radius:20px; margin-bottom:4px;}
+  .karte .go{font-size:1.4rem; color:var(--orange-d); margin-left:6px;}
+  .leer{color:#999; font-style:italic; padding:20px; text-align:center;}
+  footer{margin-top:30px; font-size:.8rem; color:#9a8f78; text-align:center;}
+  .hinweis{background:#eef7ff; border-left:4px solid var(--blau); border-radius:8px; padding:10px 14px; font-size:.86rem; color:#445; margin-top:16px;}
+  code{background:#f4f1ea; padding:1px 6px; border-radius:5px; font-size:.85em;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="titel">
+    <h1>📚 Arbeitsblätter – Übersicht</h1>
+    <p>Interaktive Lern-Arbeitsblätter, sortiert nach Klassenstufe.</p>
+  </header>
+
+  <div class="toolbar">
+    <label>Sortierung in der Klasse:
+      <select id="sort">
+        <option value="datum">nach Datum (neueste zuerst)</option>
+        <option value="name">nach Name (A–Z)</option>
+      </select>
+    </label>
+    <label>Suche:
+      <input type="search" id="suche" placeholder="Titel oder Thema …">
+    </label>
+  </div>
+
+  <div id="liste"></div>
+
+  <div class="hinweis">
+    <b>Neues Arbeitsblatt hinzufügen:</b> Lege die HTML-Datei in einen Unterordner (z. B. <code>Ch7_2/…</code>) und ergänze unten im Quelltext im Feld <code>const blaetter = [ … ]</code> eine Zeile mit Titel, Datei, Klasse, Fach, Datum und kurzer Beschreibung. Fertig.
+  </div>
+
+  <footer>Übersicht · automatisch gruppiert nach Klassenstufe</footer>
+</div>
+
+<script>
+  /* =========================================================================
+     HIER ARBEITSBLÄTTER EINTRAGEN
+     Jede Zeile ein Objekt. "datei" ist der Pfad relativ zu dieser index.html.
+     ========================================================================= */
+  const blaetter = [
+    {
+      titel: "Schnell oder langsam? Der Zerteilungsgrad",
+      datei: "Ch7_1/Arbeitsblatt_verbrennung_zerteilungsgrad.html",
+      klasse: 7,
+      fach: "Chemie",
+      datum: "2026-06-08",
+      beschreibung: "Verbrennung & Zerteilungsgrad: interaktive Teilchen-Simulationen, Temperatur, Reaktionswärme, Chemiker-Mikroskop und Quiz."
+    },
+    // { titel:"…", datei:"Ordner/datei.html", klasse:7, fach:"Chemie", datum:"2026-06-15", beschreibung:"…" },
+  ];
+
+  const elListe = document.getElementById('liste');
+  const elSort  = document.getElementById('sort');
+  const elSuche = document.getElementById('suche');
+
+  function fmtDatum(d){
+    const t = new Date(d);
+    if(isNaN(t)) return d || '';
+    return t.toLocaleDateString('de-DE', {day:'2-digit', month:'2-digit', year:'numeric'});
+  }
+
+  function render(){
+    const q = (elSuche.value || '').toLowerCase().trim();
+    const sortBy = elSort.value;
+
+    // filtern
+    let items = blaetter.filter(b =>
+      !q || (b.titel+' '+(b.beschreibung||'')+' '+(b.fach||'')).toLowerCase().includes(q)
+    );
+
+    // nach Klasse gruppieren
+    const gruppen = {};
+    items.forEach(b => { (gruppen[b.klasse] = gruppen[b.klasse] || []).push(b); });
+
+    // Klassen aufsteigend
+    const klassen = Object.keys(gruppen).map(Number).sort((a,b)=>a-b);
+
+    elListe.innerHTML = '';
+    if(klassen.length === 0){
+      elListe.innerHTML = '<div class="leer">Keine Arbeitsblätter gefunden.</div>';
+      return;
+    }
+
+    klassen.forEach(k => {
+      const arr = gruppen[k];
+      // innerhalb der Klasse sortieren
+      arr.sort((a,b) => sortBy === 'name'
+        ? a.titel.localeCompare(b.titel, 'de')
+        : (new Date(b.datum) - new Date(a.datum)) || a.titel.localeCompare(b.titel,'de')
+      );
+
+      const g = document.createElement('section');
+      g.className = 'gruppe';
+      g.innerHTML = '<h2><span class="kpill">Klasse ' + k + '</span></h2>';
+
+      arr.forEach(b => {
+        const a = document.createElement('a');
+        a.className = 'karte';
+        a.href = b.datei;
+        a.innerHTML =
+          '<div class="info">' +
+            (b.fach ? '<span class="fach">' + b.fach + '</span><br>' : '') +
+            '<h3>' + b.titel + '</h3>' +
+            (b.beschreibung ? '<p>' + b.beschreibung + '</p>' : '') +
+          '</div>' +
+          '<div class="meta">' + (b.datum ? '📅 ' + fmtDatum(b.datum) : '') +
+            '<div class="go">›</div></div>';
+        g.appendChild(a);
+      });
+      elListe.appendChild(g);
+    });
+  }
+
+  elSort.addEventListener('change', render);
+  elSuche.addEventListener('input', render);
+  render();
+</script>
+</body>
+</html>

@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verbrennung & Zerteilungsgrad – Arbeitsblatt Klasse 7</title>
+<style>
+  :root{
+    --braun:#8a5a2b; --braun-d:#5e3c19; --orange:#ff7a18; --orange-d:#e85d04;
+    --blau:#1e72d6; --blau-l:#cfe6ff; --gruen:#2e9e5b; --grau:#f4f1ea;
+    --tinte:#222; --linie:#d8d2c4;
+  }
+  *{box-sizing:border-box}
+  body{font-family:"Segoe UI",system-ui,Arial,sans-serif; color:var(--tinte); margin:0; background:#fbf9f4; line-height:1.5;}
+  .wrap{max-width:980px; margin:0 auto; padding:24px 18px 60px;}
+  header.titel{background:linear-gradient(120deg,#ff7a18,#e85d04); color:#fff; border-radius:18px; padding:22px 26px; margin-bottom:22px; box-shadow:0 6px 16px rgba(232,93,4,.25);}
+  header.titel h1{margin:0 0 4px; font-size:1.7rem;}
+  header.titel p{margin:0; opacity:.95;}
+  .namezeile{display:flex; gap:18px; flex-wrap:wrap; margin-top:14px; font-size:.92rem;}
+  .namezeile span{background:rgba(255,255,255,.18); padding:4px 12px; border-radius:30px;}
+  h2{font-size:1.28rem; margin:34px 0 12px; color:var(--orange-d); border-bottom:3px solid var(--orange); padding-bottom:6px; display:flex; align-items:center; gap:10px;}
+  h2 .num{background:var(--orange); color:#fff; width:30px; height:30px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:1rem; flex:0 0 auto;}
+  h3{font-size:1.05rem; margin:18px 0 6px; color:var(--braun-d);}
+  p{margin:8px 0;}
+  .karte{background:#fff; border:1px solid var(--linie); border-radius:14px; padding:18px 20px; margin:14px 0; box-shadow:0 2px 6px rgba(0,0,0,.04);}
+  .merksatz{background:#fff7ec; border:2px dashed var(--orange); border-radius:14px; padding:16px 20px;}
+  .merksatz b{color:var(--orange-d);}
+  .alltag{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:10px 0;}
+  .alltag .item{background:#fff; border:1px solid var(--linie); border-radius:14px; padding:14px; text-align:center;}
+  .alltag .item svg{width:100%; height:110px;}
+  .alltag .item p{font-size:.9rem; margin:8px 0 0;}
+  .exp{display:grid; grid-template-columns:1fr 1fr; gap:14px;}
+  .exp .karte h3{margin-top:0;}
+  .mat{font-size:.9rem; background:var(--grau); border-radius:8px; padding:8px 10px; margin:8px 0;}
+  .schritt{margin:4px 0;}
+  .schreiblinie{border-bottom:1.5px dotted #b8b0a0; height:22px; margin:10px 0;}
+  .tipp{font-size:.86rem; color:#7a6c4f; font-style:italic;}
+  ol.fragen{padding-left:22px;} ol.fragen li{margin:12px 0;}
+  .cmp{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:10px 0;}
+  .cmp .side{border:1.5px solid #e2d4bf; border-radius:12px; padding:10px; text-align:center; background:#f7f1e8;}
+  .cmp .side.p2{border-color:#cfe0f5; background:#f4f9ff;}
+  .cmp .side svg{width:100%; height:130px;}
+  .warnbox{background:#fff0ef; border-left:5px solid #d7263d; border-radius:8px; padding:12px 16px;}
+  .infobox{background:#eef7ff; border-left:5px solid var(--blau); border-radius:8px; padding:12px 16px;}
+  /* Simulation */
+  .sim-box{background:#fff; border:1px solid var(--linie); border-radius:16px; padding:18px; box-shadow:0 3px 10px rgba(0,0,0,.06);}
+  .stage{max-width:600px; margin:0 auto;}
+  .stage .head{display:flex; justify-content:space-between; align-items:baseline; font-size:.92rem; margin-bottom:6px;}
+  .stage .head b{color:var(--orange-d);}
+  .lab-row{display:flex; gap:14px; align-items:stretch;}
+  canvas#cv{flex:1; width:100%; height:auto; display:block; background:#f7fbff; border-radius:12px; border:1px solid #dfe9f5;}
+  /* Thermometer */
+  .thermo{display:flex; flex-direction:column; align-items:center; justify-content:flex-end; width:58px;}
+  .thermo-tube{position:relative; width:16px; flex:1; min-height:200px; background:#eef2f6; border:2px solid #b9c6d2; border-bottom:none; border-radius:9px 9px 0 0; overflow:hidden;}
+  .thermo-fill{position:absolute; left:0; bottom:0; width:100%; height:8%; background:#2f86d6; transition:height .15s linear, background .25s;}
+  .thermo-bulb{width:30px; height:30px; border-radius:50%; background:#2f86d6; border:2px solid #b9c6d2; margin-top:-3px; transition:background .25s;}
+  .thermo-val{font-size:.78rem; font-weight:800; margin-top:4px; color:#444;}
+  .thermo-cap{font-size:.7rem; color:#888;}
+  .grossreg{display:flex; align-items:center; gap:12px; background:#fff3e6; border:1.5px solid #ffd2a6; padding:10px 16px; border-radius:30px; margin:14px auto 6px; max-width:560px; justify-content:center; font-size:.92rem;}
+  .grossreg input{flex:1; max-width:280px;}
+  .controls{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:12px 4px 4px; justify-content:center;}
+  .controls button{font-size:.95rem; font-weight:700; border:none; border-radius:30px; padding:10px 22px; cursor:pointer; color:#fff; background:var(--orange-d);}
+  .controls button.sek{background:#6b7280;}
+  .controls button:active{transform:translateY(1px);}
+  .ctrl-rows{display:flex; gap:18px; flex-wrap:wrap; justify-content:center; align-items:flex-start; margin:14px 4px 4px;}
+  .ctrl-group{display:flex; flex-direction:column; align-items:center; gap:6px;}
+  .ctrl-cap{font-size:.74rem; font-weight:800; letter-spacing:.04em; text-transform:uppercase; color:#9a8f78;}
+  .ctrl-btns{display:flex; gap:10px;}
+  .ctrl-btns button, .ctrl-group button{font-size:.95rem; font-weight:700; border:none; border-radius:30px; padding:10px 20px; cursor:pointer; color:#fff; background:var(--orange-d);}
+  .ctrl-btns button.sek{background:#6b7280;}
+  .mic-counts{display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin:12px 0 6px;}
+  .mic-counts .mc{background:#fff; border:1px solid var(--linie); border-radius:12px; padding:8px 16px; font-size:1rem; font-weight:600;}
+  .mic-counts .mc b{font-size:1.3rem;}
+  .mic-counts .mc.c b{color:#222;} .mic-counts .mc.o b{color:var(--blau);} .mic-counts .mc.co b{color:var(--orange-d);}
+  .luecke{display:inline-block; min-width:96px; border-bottom:2px solid #c79a52; margin:0 3px; vertical-align:baseline;}
+  .hilfe{margin-top:12px; display:flex; flex-direction:column; gap:8px;}
+  .hilfe details{background:#fff; border:1px solid var(--linie); border-radius:10px;}
+  .hilfe summary{cursor:pointer; font-weight:700; padding:8px 14px; font-size:.92rem; color:var(--blau); list-style:none;}
+  .hilfe summary::-webkit-details-marker{display:none;}
+  .hilfe summary::before{content:"▸ ";}
+  .hilfe details[open] summary::before{content:"▾ ";}
+  .hilfe details.loesung summary{color:var(--gruen);}
+  .hilfe .inhalt{padding:2px 16px 12px; font-size:.93rem; line-height:1.55;}
+  /* anklickbares Hilfewort */
+  .hw{color:var(--blau); border-bottom:2px dotted var(--blau); cursor:help; font-weight:600; white-space:nowrap;}
+  .hw::after{content:" ℹ"; font-size:.8em;}
+  #hwcard{position:fixed; z-index:999; max-width:280px; background:#fff; border:2px solid var(--blau); border-radius:12px; box-shadow:0 8px 24px rgba(0,0,0,.18); padding:12px 14px; font-size:.9rem; line-height:1.5; display:none;}
+  #hwcard.show{display:block;}
+  #hwcard .x{float:right; cursor:pointer; color:#999; font-weight:800; margin:-4px -4px 0 8px;}
+  /* Auftrags-Hilfekärtchen */
+  details.tipp-karte{margin-top:6px; background:#eef7ff; border:1px solid #cfe0f5; border-radius:8px;}
+  details.tipp-karte summary{cursor:pointer; list-style:none; font-size:.85rem; font-weight:700; color:var(--blau); padding:5px 10px;}
+  details.tipp-karte summary::-webkit-details-marker{display:none;}
+  details.tipp-karte summary::before{content:"▸ ";}
+  details.tipp-karte[open] summary::before{content:"▾ ";}
+  details.tipp-karte.loes{background:#eafaf0; border-color:#bce8cf;}
+  details.tipp-karte.loes summary{color:var(--gruen);}
+  details.tipp-karte .ti{padding:2px 12px 10px; font-size:.9rem; line-height:1.5;}
+  .hilfe-reihe{display:flex; flex-direction:column; gap:5px; margin-top:6px;}
+  /* schrittweise Hilfe */
+  .hilfe-stufen{margin-top:8px;}
+  .hilfe-btn{background:#eef7ff; border:1.5px solid #cfe0f5; color:var(--blau); font-weight:700; border-radius:20px; padding:7px 16px; cursor:pointer; font-size:.88rem;}
+  .hilfe-btn:hover{background:#e2f0ff;}
+  .hilfe-btn:disabled{opacity:.65; cursor:default;}
+  .hilfe-stufen .stufe{display:none; margin-top:6px; background:#eef7ff; border:1px solid #cfe0f5; border-radius:9px; padding:8px 12px; font-size:.9rem; line-height:1.5;}
+  .hilfe-stufen .stufe.show{display:block;}
+  .hilfe-stufen .stufe.loes{background:#eafaf0; border-color:#bce8cf;}
+  .hilfe-stufen .st-h{color:var(--blau);}
+  .hilfe-stufen .stufe.loes .st-h{color:var(--gruen);}
+  /* Könnens-Quiz */
+  .quiz{background:#fff; border:1px solid var(--linie); border-radius:16px; padding:18px 20px; box-shadow:0 3px 10px rgba(0,0,0,.06);}
+  .quiz .q{margin:0 0 18px; padding-bottom:14px; border-bottom:1px dashed #e6e0d2;}
+  .quiz .q:last-of-type{border-bottom:none;}
+  .quiz .qf{font-weight:700; margin-bottom:8px;}
+  .quiz .opt{display:block; width:100%; text-align:left; background:#f7f5ef; border:1.5px solid var(--linie); border-radius:10px; padding:9px 13px; margin:6px 0; cursor:pointer; font-size:.95rem; transition:background .15s;}
+  .quiz .opt:hover{background:#eef0ea;}
+  .quiz .opt.correct{background:#e3f6e9; border-color:#2e9e5b; color:#1c6b3c; font-weight:700;}
+  .quiz .opt.wrong{background:#fde7e7; border-color:#d7263d; color:#a01624;}
+  .quiz .opt.disabled{cursor:default; opacity:.85;}
+  .quiz .fb{font-size:.9rem; margin-top:6px; min-height:1.2em;}
+  .quiz .score{font-size:1.15rem; font-weight:800; text-align:center; color:var(--orange-d); margin-top:6px;}
+  .quiz .qbtns{display:flex; gap:10px; justify-content:center; margin-top:10px;}
+  .quiz .qbtns button{border:none; border-radius:30px; padding:9px 20px; font-weight:700; color:#fff; background:var(--orange-d); cursor:pointer;}
+  .quiz .qbtns button.sek{background:#6b7280;}
+  /* POE – Erst vorhersagen */
+  .poe{background:#f4ecff; border:1.5px solid #d9c2f5; border-left:5px solid #7c3aed; border-radius:12px; padding:12px 16px; margin:14px auto; max-width:600px;}
+  .poe-q{font-size:.95rem; margin-bottom:8px;}
+  .poe-opts{display:flex; gap:8px; flex-wrap:wrap;}
+  .poe-opt{background:#fff; border:1.5px solid #d9c2f5; border-radius:20px; padding:7px 14px; cursor:pointer; font-size:.92rem;}
+  .poe-opt:hover{background:#efe6ff;}
+  .poe-opt.sel{background:#7c3aed; border-color:#7c3aed; color:#fff; font-weight:700;}
+  .poe-after{display:none; margin-top:10px; font-size:.9rem; color:#5b21b6;}
+  .poe.done .poe-after{display:block;}
+  /* gesperrte Start-Buttons bis Vorhersage */
+  #btnStart:disabled, #micStart:disabled{opacity:.45; cursor:not-allowed; filter:grayscale(.4);}
+  .lock-hint{font-size:.82rem; color:#7c3aed; font-weight:600; margin-top:7px;}
+  .lock-hint b{color:#6d28d9;}
+  /* Selbst-Check mit Ampel */
+  .selfcheck{background:#fff; border:1px solid var(--linie); border-radius:16px; padding:16px 20px; box-shadow:0 3px 10px rgba(0,0,0,.05);}
+  .sc-leg{font-size:.85rem; color:#666; margin-bottom:8px;}
+  .sc-row{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:9px 0; border-bottom:1px dashed #eee;}
+  .sc-row:last-child{border-bottom:none;}
+  .sc-txt{font-size:.95rem;}
+  .sc-amp{display:flex; gap:5px; flex:0 0 auto;}
+  .sc-amp button{background:#f4f1ea; border:1.5px solid var(--linie); border-radius:8px; font-size:1.05rem; padding:2px 8px; cursor:pointer; filter:grayscale(.7); opacity:.55;}
+  .sc-amp button.on{filter:none; opacity:1; transform:scale(1.15); border-color:#999;}
+  /* Lernlandkarte */
+  .lernkarte{background:#eef7ff; border:1.5px solid #cfe0f5; border-left:5px solid var(--blau); border-radius:14px; padding:14px 18px; margin:0 0 22px;}
+  .lernkarte h3{margin:0 0 2px; color:var(--blau);}
+  .lk-sub{font-size:.88rem; color:#555; margin:0 0 8px;}
+  .lk-list{list-style:none; padding:0; margin:0;}
+  .lk-item{display:flex; align-items:center; gap:10px; padding:7px 0; cursor:pointer; font-size:.95rem; border-bottom:1px dashed #dde8f3;}
+  .lk-item:last-child{border-bottom:none;}
+  .lk-box{flex:0 0 auto; width:22px; height:22px; border:2px solid var(--blau); border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-weight:800; color:#fff; background:#fff; font-size:.95rem;}
+  .lk-item.done .lk-box{background:var(--gruen); border-color:var(--gruen);}
+  .lk-item.done .lk-box::after{content:"✓";}
+  .lk-item.done .lk-txt{text-decoration:line-through; color:#8a9a8f;}
+  .slider-wrap{display:flex; align-items:center; gap:10px; background:var(--grau); padding:8px 16px; border-radius:30px; font-size:.9rem;}
+  .slider-wrap.temp{background:linear-gradient(90deg,#dbeeff,#ffe0d6); border:1px solid #ffd2a6;}
+  .slider-wrap input{width:150px;}
+  .check{display:flex; align-items:center; gap:8px; background:#fff0e6; border:1.5px solid #ffc89e; border-radius:30px; padding:8px 16px; font-size:.9rem; cursor:pointer; font-weight:600; color:var(--orange-d);}
+  .check input{width:18px; height:18px;}
+  .readouts{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:14px 0 4px;}
+  .ro{background:#fff; border:1px solid var(--linie); border-radius:12px; padding:8px 14px; text-align:center; min-width:108px;}
+  .ro .zahl{font-size:1.6rem; font-weight:800; line-height:1.1;}
+  .ro.uhr .zahl{color:var(--orange-d);} .ro.pct .zahl{color:var(--gruen);} .ro.hit .zahl{color:var(--blau);}
+  .ro .lab{font-size:.72rem; color:#666;}
+  .splits{display:flex; gap:10px; justify-content:center; flex-wrap:wrap; font-size:.88rem; margin-top:6px;}
+  .splits .s{background:#fff7ec; border:1px solid #ffd9b0; border-radius:20px; padding:4px 12px;}
+  .splits .s.hl{background:#ffe1c2; border-color:#ff9a3c; font-weight:700;}
+  .splits .s b{color:var(--orange-d);}
+  .progress{height:14px; background:#e7e7e7; border-radius:8px; overflow:hidden; margin:10px auto 0; max-width:560px;}
+  .progress > div{height:100%; width:0%; background:linear-gradient(90deg,#5cc97f,#2e9e5b); transition:width .15s;}
+  .legende{display:flex; gap:18px; flex-wrap:wrap; justify-content:center; font-size:.85rem; margin-top:12px;}
+  .legende span{display:inline-flex; align-items:center; gap:6px;}
+  .dot{width:14px; height:14px; border-radius:50%; display:inline-block;}
+  .hinweis{text-align:center; font-size:.88rem; color:#7a6c4f; margin-top:10px; min-height:1.3em; font-weight:600;}
+  .badge{display:inline-block; background:var(--blau-l); color:var(--blau); font-size:.78rem; font-weight:700; padding:2px 10px; border-radius:20px;}
+  .frage-box{background:#eef7ff; border-left:5px solid var(--blau); border-radius:8px; padding:12px 16px;}
+  @media(max-width:680px){ .alltag,.exp,.cmp{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="titel">
+    <h1>🔥 Schnell oder langsam? Der Zerteilungsgrad</h1>
+    <p>Warum brennen Holzspäne lichterloh, ein dicker Holzklotz aber nur ganz langsam? – Chemie, Klasse 7</p>
+    <div class="namezeile"><span>Name: ________________</span><span>Klasse: ______</span><span>Datum: __________</span></div>
+  </header>
+
+  <div class="lernkarte">
+    <h3>🗺️ Deine Lernlandkarte – das nimmst du dir heute vor</h3>
+    <p class="lk-sub">Tippe an, was du schon kannst. Ganz am Ende prüfst du dich beim Selbst-Check noch einmal.</p>
+    <ul class="lk-list">
+      <li class="lk-item"><span class="lk-box"></span><span class="lk-txt">Ich kann erklären, was „<b>umgesetzt</b>" bedeutet.</span></li>
+      <li class="lk-item"><span class="lk-box"></span><span class="lk-txt">Ich kann erklären, warum ein <b>fein zerteilter</b> Stoff schneller reagiert.</span></li>
+      <li class="lk-item"><span class="lk-box"></span><span class="lk-txt">Ich kann erklären, warum es <b>Platz (Luft)</b> zwischen den Teilchen braucht.</span></li>
+      <li class="lk-item"><span class="lk-box"></span><span class="lk-txt">Ich kann erklären, wie die <b>Temperatur</b> das Reaktions-Tempo verändert.</span></li>
+      <li class="lk-item"><span class="lk-box"></span><span class="lk-txt">Ich kann erklären, warum beim Reagieren <b>kein Atom verloren geht</b>.</span></li>
+      <li class="lk-item"><span class="lk-box"></span><span class="lk-txt">Ich kann erklären, was beim „<b>Durchgehen</b>" einer Reaktion passiert.</span></li>
+    </ul>
+  </div>
+
+  <!-- 1 EINSTIEG -->
+  <h2><span class="num">1</span> Das kennst du aus dem Alltag</h2>
+  <p>Schau dir die drei Bilderpaare an. Jedes Mal ist es <b>derselbe Stoff</b> – einmal als <b>großes Stück</b>, einmal <b>fein zerteilt</b>. Welcher reagiert wohl schneller?</p>
+  <div class="alltag">
+    <div class="item">
+      <svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+        <rect x="14" y="50" width="52" height="40" rx="5" fill="#8a5a2b" stroke="#5e3c19" stroke-width="2"/>
+        <path d="M16 50 q26 -16 50 0" fill="none" stroke="#5e3c19" stroke-width="2"/>
+        <g stroke="#8a5a2b" stroke-width="5" stroke-linecap="round">
+          <line x1="100" y1="86" x2="120" y2="60"/><line x1="110" y1="88" x2="118" y2="58"/>
+          <line x1="120" y1="88" x2="128" y2="56"/><line x1="130" y1="86" x2="138" y2="60"/>
+          <line x1="106" y1="88" x2="100" y2="64"/><line x1="134" y1="88" x2="146" y2="64"/>
+        </g>
+        <text x="40" y="108" font-size="11" text-anchor="middle" fill="#5e3c19">Holzklotz</text>
+        <text x="120" y="108" font-size="11" text-anchor="middle" fill="#5e3c19">Holzspäne</text>
+      </svg>
+      <p><b>Lagerfeuer:</b> Klotz vs. Späne/Anzünder</p>
+    </div>
+    <div class="item">
+      <svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+        <rect x="20" y="45" width="44" height="40" rx="4" fill="#ffffff" stroke="#c9c2b0" stroke-width="2"/>
+        <line x1="20" y1="58" x2="64" y2="58" stroke="#e3ddcc"/><line x1="34" y1="45" x2="34" y2="85" stroke="#e3ddcc"/>
+        <g fill="#ffffff" stroke="#c9c2b0">
+          <circle cx="100" cy="78" r="3"/><circle cx="110" cy="82" r="2.5"/><circle cx="120" cy="76" r="3"/>
+          <circle cx="130" cy="82" r="2.5"/><circle cx="140" cy="78" r="3"/><circle cx="106" cy="70" r="2"/>
+          <circle cx="124" cy="68" r="2"/><circle cx="116" cy="84" r="2.5"/><circle cx="134" cy="70" r="2"/>
+        </g>
+        <text x="42" y="106" font-size="11" text-anchor="middle" fill="#5e3c19">Würfelzucker</text>
+        <text x="120" y="106" font-size="11" text-anchor="middle" fill="#5e3c19">Puderzucker</text>
+      </svg>
+      <p><b>Tee süßen:</b> Würfel vs. Puderzucker</p>
+    </div>
+    <div class="item">
+      <svg viewBox="0 0 160 120" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="42" cy="62" r="24" fill="#eef3f7" stroke="#9fb3c2" stroke-width="2"/>
+        <line x1="22" y1="62" x2="62" y2="62" stroke="#9fb3c2"/>
+        <g fill="#eef3f7" stroke="#9fb3c2">
+          <circle cx="104" cy="74" r="4"/><circle cx="116" cy="80" r="3"/><circle cx="128" cy="72" r="4"/>
+          <circle cx="138" cy="80" r="3"/><circle cx="110" cy="66" r="2.5"/><circle cx="126" cy="84" r="2.5"/><circle cx="134" cy="66" r="2.5"/>
+        </g>
+        <text x="42" y="104" font-size="11" text-anchor="middle" fill="#5e3c19">ganze Tablette</text>
+        <text x="120" y="104" font-size="11" text-anchor="middle" fill="#5e3c19">zerstoßen</text>
+      </svg>
+      <p><b>Brausetablette:</b> ganz vs. zerstoßen</p>
+    </div>
+  </div>
+  <div class="frage-box">
+    <b>Forscherfrage:</b> Wovon hängt die <b>Geschwindigkeit einer Reaktion</b> ab? Eine Rolle spielen die <b>Zerteilung</b>, der <b>Platz dazwischen</b> und die <b>Temperatur</b>.<br>
+    <span class="badge">Meine Vermutung</span>
+    <div class="schreiblinie"></div><div class="schreiblinie"></div>
+  </div>
+
+  <!-- 2 EXPERIMENTE -->
+  <h2><span class="num">2</span> Einfache Experimente</h2>
+  <p>Probiert die Versuche zu zweit aus. <b>Wichtig:</b> immer die <b>gleiche Menge</b> und (bei A & B) die <b>gleiche Wassermenge</b> nehmen – jeweils nur <b>eine</b> Sache verändern!</p>
+  <div class="exp">
+    <div class="karte">
+      <h3>💧 Versuch A – Zucker auflösen</h3>
+      <div class="mat"><b>Material:</b> 2 Gläser mit gleich viel kaltem Wasser, 1 Würfelzucker, 1 Löffel Puderzucker, Uhr.</div>
+      <p class="schritt"><b>So geht's:</b> Würfel in Glas 1, Puderzucker in Glas 2 (gleiche Masse!). <b>Nicht umrühren.</b> Zeit bis alles gelöst ist stoppen.</p>
+      <p><b>Beobachtung (Zeit):</b></p><div class="schreiblinie"></div>
+    </div>
+    <div class="karte">
+      <h3>🫧 Versuch B – Brausetablette</h3>
+      <div class="mat"><b>Material:</b> 2 Gläser Wasser, 2 gleiche Tabletten, 1 Tüte zum Zerstoßen, Uhr.</div>
+      <p class="schritt"><b>So geht's:</b> Tablette 1 ganz, Tablette 2 zu Pulver zerdrücken, beide gleichzeitig ins Wasser. Wer sprudelt schneller fertig?</p>
+      <p><b>Beobachtung:</b></p><div class="schreiblinie"></div>
+    </div>
+    <div class="karte">
+      <h3>🌡️ Versuch C – kalt oder warm?</h3>
+      <div class="mat"><b>Material:</b> 2 gleiche Brausetabletten, 1 Glas <b>Eiswasser</b>, 1 Glas <b>warmes</b> Wasser, Uhr.</div>
+      <p class="schritt"><b>So geht's:</b> In jedes Glas gleichzeitig eine ganze Tablette geben. In welchem Wasser sprudelt es schneller? <span class="tipp">(Nur warmes, kein heißes Wasser.)</span></p>
+      <p><b>Beobachtung:</b></p><div class="schreiblinie"></div>
+    </div>
+    <div class="karte">
+      <h3>🔥 Versuch D – Verbrennen <span class="badge">nur Lehrkraft</span></h3>
+      <div class="mat"><b>Material:</b> feuerfeste Unterlage, dicker Holzspan, dünne Holzwolle, Feuerzeug. <b>Schutzbrille!</b></div>
+      <p class="schritt"><b>So geht's:</b> Die Lehrkraft entzündet zuerst die feine Holzwolle, dann das dicke Stück. Was fängt sofort Feuer?</p>
+      <p><b>Beobachtung:</b></p><div class="schreiblinie"></div>
+    </div>
+  </div>
+
+  <!-- 3 TEILCHENMODELL + SIM -->
+  <h2><span class="num">3</span> Warum ist das so? Das Teilchenmodell</h2>
+  <div class="karte">
+    <p>Eine Reaktion (Auflösen, Sprudeln, Verbrennen) passiert nur <b>an der Oberfläche</b> – dort, wo die <b>Teilchen von außen</b> (z. B. Sauerstoff-Teilchen) den Stoff <b>treffen</b>. Bei jedem Treffer wird ein winziges Stück <b>umgewandelt und weggefressen</b>.</p>
+    <p>🟫 <b>Pappscheiben-Versuch zum Anfassen:</b> Lege 16 Pappquadrate zu <b>einem großen Quadrat</b> – nur die <b>Rand-Quadrate</b> berühren die Luft. Nimm sie dann <b>auseinander</b> und lege sie <b>mit Abstand</b> aus: Jetzt hat jedes alle Seiten frei, die Teilchen kommen von außen <b>und</b> in die Lücken!</p>
+  </div>
+
+  <div class="karte warnbox">
+    <h3 style="color:#d7263d; margin-top:0;">⚠️ Wichtig: Es braucht <u>Platz dazwischen</u>!</h3>
+    <p style="margin-bottom:0;">🌾 Ein <b>Haufen feines Mehl</b> brennt kaum – die Körner liegen dicht an dicht, der Sauerstoff kommt nicht hinein. Dasselbe Mehl als <b>Staubwolke</b> (viel Platz zwischen den Körnern!) verbrennt <b>explosionsartig</b>. Zerteilen hilft nur <b>mit Luft dazwischen</b>.</p>
+  </div>
+
+  <h3 style="text-align:center; margin-top:24px;">🔬 Mein Versuchslabor unter dem Super-Mikroskop</h3>
+  <p style="text-align:center; max-width:860px; margin:6px auto 14px; font-size:.95rem;">
+    Stell dir vor, du schaust mit einem <b>Super-Mikroskop</b> auf die Teilchen. Probiere die Regler frei aus – deine <b>Forscher-Aufträge</b> findest du <b>unter der Animation</b>.
+  </p>
+
+  <div class="poe" data-unlock="btnStart">
+    <div class="poe-q">🔮 <b>Erst vorhersagen, dann ausprobieren:</b> Wo wird der Brennstoff wohl <b>schneller umgesetzt</b> – beim massiven Klotz oder bei der Staubwolke? (Es ist <b>gleich viel</b> Brennstoff!)</div>
+    <div class="poe-opts">
+      <button class="poe-opt">Beim Klotz</button>
+      <button class="poe-opt">Bei der Staubwolke</button>
+      <button class="poe-opt">Bei beiden gleich</button>
+    </div>
+    <div class="poe-after">✏️ Vorhersage gespeichert! Starte jetzt die Animation und <b>prüfe</b>, ob du recht hattest.</div>
+  </div>
+
+  <div class="sim-box">
+    <div class="stage">
+      <div class="head">
+        <span id="stLevel"><b>Massiver Klotz</b></span>
+        <span id="stCount">1 Brocken · Oberfläche ×1</span>
+      </div>
+      <div class="lab-row">
+        <div class="thermo" title="Temperatur = wie schnell die Teilchen sind">
+          <div class="thermo-tube"><div class="thermo-fill" id="thFill"></div></div>
+          <div class="thermo-bulb" id="thBulb"></div>
+          <div class="thermo-val" id="thVal">20°</div>
+          <div class="thermo-cap">🌡️</div>
+        </div>
+        <canvas id="cv" width="470" height="400"></canvas>
+      </div>
+    </div>
+
+    <div class="grossreg">
+      <span>🧱 Klotz</span>
+      <input type="range" id="fine" min="0" max="4" step="1" value="0">
+      <span>Staubwolke 💨</span>
+    </div>
+
+    <div class="ctrl-rows">
+      <div class="ctrl-group">
+        <div class="ctrl-cap">Animation</div>
+        <div class="ctrl-btns">
+          <button id="btnStart" disabled>▶ Reaktion starten</button>
+          <button id="btnReset" class="sek" title="Zurücksetzen" aria-label="Zurücksetzen">↺</button>
+        </div>
+        <div class="lock-hint" id="lockMain">🔒 Gib erst oben in der <b>lila Vorhersage-Box</b> deinen Tipp ab.</div>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-cap">Starttemperatur</div>
+        <div class="slider-wrap temp"><span>🧊 kalt</span><input type="range" id="temp" min="0" max="100" value="35"><span>heiß 🔥</span></div>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-cap">Extra</div>
+        <label class="check"><input type="checkbox" id="feedback"> 🔥 Reaktionswärme</label>
+      </div>
+    </div>
+
+    <div class="readouts">
+      <div class="ro uhr"><div class="zahl" id="roUhr">0,0&nbsp;s</div><div class="lab">⏱ Stoppuhr</div></div>
+      <div class="ro pct"><div class="zahl" id="roPct">0&nbsp;%</div><div class="lab"><span class="hw" data-help="<b>Umgesetzt</b> heißt: So viel von 100 Teilen Brennstoff hat schon reagiert (hat sich zu einem neuen Stoff mit neuen Eigenschaften <i>umgewandelt</i>).">umgesetzt</span></div></div>
+      <div class="ro hit"><div class="zahl" id="roHit">0</div><div class="lab">Aufprälle / Sek.<br>= Reaktions-Tempo</div></div>
+    </div>
+
+    <div class="legende">
+      <span><i class="dot" style="background:#1e72d6"></i> Sauerstoff-Teilchen</span>
+      <span><i class="dot" style="background:#8a5a2b"></i> Brennstoff</span>
+      <span><i class="dot" style="background:#ff7a18"></i> Treffer = Reaktion</span>
+      <span><i class="dot" style="background:#efe3d2; border:1px solid #ccc"></i> weggefressen</span>
+    </div>
+    <div class="hinweis" id="hinweis">Stelle den Zerteilungsgrad ein und drücke „Reaktion starten".</div>
+  </div>
+
+  <div class="karte" style="margin-top:16px;">
+    <h3 style="margin-top:0;">🎯 Forscher-Aufträge (von leicht zu schwer)</h3>
+    <ol class="fragen" style="margin:6px 0;">
+      <li>🟢 Stelle den Regler auf <b>„Klotz"</b> und drücke Start. Wie viele <b>Aufprälle/Sek.</b> zählst du ungefähr, und reagiert der Klotz schnell oder langsam?
+        <div class="schreiblinie"></div>
+        <div class="hilfe-stufen">
+          <button class="hilfe-btn" type="button">Bitte etwas Hilfe <span class="cnt">(0 von 3)</span></button>
+          <div class="stufe"><b class="st-h">💡 Kleiner Tipp:</b> Schau auf die Kachel <b>„Aufprälle/Sek." (= Reaktions-Tempo)</b>.</div>
+          <div class="stufe"><b class="st-h">💡 Mehr Hilfe:</b> Beim Klotz treffen die Sauerstoff-Teilchen nur die Außenseite – das sind <b>wenige Treffer pro Sekunde</b>.</div>
+          <div class="stufe loes"><b class="st-h">✅ Lösung:</b> Es sind nur wenige Aufprälle pro Sekunde – der Klotz reagiert also <b>langsam</b>.</div>
+        </div></li>
+      <li>🟢 Schiebe den Regler auf <b>„Staubwolke"</b> und starte. Bei welcher Einstellung ist das Klötzchen <b>schneller weggefressen</b>?
+        <div class="schreiblinie"></div>
+        <div class="hilfe-stufen">
+          <button class="hilfe-btn" type="button">Bitte etwas Hilfe <span class="cnt">(0 von 3)</span></button>
+          <div class="stufe"><b class="st-h">💡 Kleiner Tipp:</b> Mach <b>zwei Durchläufe</b> bei <b>gleicher Temperatur</b>: einmal „Klotz", einmal „Staubwolke".</div>
+          <div class="stufe"><b class="st-h">💡 Mehr Hilfe:</b> Vergleiche, wie schnell „umgesetzt" auf 100 % steigt. Mehr Oberfläche bedeutet mehr Treffer pro Sekunde.</div>
+          <div class="stufe loes"><b class="st-h">✅ Lösung:</b> Die <b>Staubwolke</b> ist viel schneller weggefressen, weil sie bei gleicher Menge eine <b>viel größere Oberfläche</b> hat.</div>
+        </div></li>
+      <li>🟡 Achte beim Start auf das <b>Zerfallen</b>: Ist nach dem Auseinanderdriften <b>gleich viel</b> Brennstoff da wie vorher? Woran erkennst du das?
+        <div class="schreiblinie"></div>
+        <div class="hilfe-stufen">
+          <button class="hilfe-btn" type="button">Bitte etwas Hilfe <span class="cnt">(0 von 3)</span></button>
+          <div class="stufe"><b class="st-h">💡 Kleiner Tipp:</b> Achte beim Start genau auf die <b>braunen Kästchen</b>.</div>
+          <div class="stufe"><b class="st-h">💡 Mehr Hilfe:</b> Beim Zerfallen werden die Kästchen nur <b>verteilt</b> – es kommen keine dazu und keine verschwinden.</div>
+          <div class="stufe loes"><b class="st-h">✅ Lösung:</b> Ja, es ist <b>gleich viel</b> Brennstoff. Die Zahl der Kästchen bleibt gleich – sie liegen nur weiter verteilt (mit Platz dazwischen).</div>
+        </div></li>
+      <li>🟡 Lass die Zerteilung gleich (z. B. <b>„fein"</b>) und schiebe die <b>Starttemperatur</b> von kalt nach heiß. Was ändert sich an den Teilchen und an der Stoppuhr-Zeit?
+        <div class="schreiblinie"></div>
+        <div class="hilfe-stufen">
+          <button class="hilfe-btn" type="button">Bitte etwas Hilfe <span class="cnt">(0 von 3)</span></button>
+          <div class="stufe"><b class="st-h">💡 Kleiner Tipp:</b> Die <b>Temperatur</b> steuert, wie schnell sich die blauen Teilchen bewegen.</div>
+          <div class="stufe"><b class="st-h">💡 Mehr Hilfe:</b> Schneller fliegende Teilchen → <b>mehr Treffer pro Sekunde</b>. Achte auf die Kachel „Aufprälle/Sek." und die Stoppuhr.</div>
+          <div class="stufe loes"><b class="st-h">✅ Lösung:</b> Heiß → Teilchen bewegen sich schneller → mehr Treffer pro Sekunde → die Stoppuhr-Zeit wird <b>kürzer</b> (die Reaktion läuft schneller).</div>
+        </div></li>
+      <li>🔴 Setze den Haken <b>„Reaktionswärme"</b>. Bei welcher Einstellung <b>„geht die Reaktion durch"</b> (Thermometer ganz oben)? Warum schafft das der Klotz nicht?
+        <div class="schreiblinie"></div>
+        <div class="hilfe-stufen">
+          <button class="hilfe-btn" type="button">Bitte etwas Hilfe <span class="cnt">(0 von 3)</span></button>
+          <div class="stufe"><b class="st-h">💡 Kleiner Tipp:</b> „Durchgehen" = das <b>Thermometer schießt nach ganz oben</b> (rot).</div>
+          <div class="stufe"><b class="st-h">💡 Mehr Hilfe:</b> Probiere von „Klotz" bis „Staubwolke" und achte auf die <b>Treffer pro Sekunde</b>. Wann entsteht mehr Wärme, als wieder verloren geht?</div>
+          <div class="stufe loes"><b class="st-h">✅ Lösung:</b> Erst bei starker Zerteilung (<b>Staubwolke</b>) gibt es genug Treffer, sodass mehr Wärme entsteht als verloren geht → die Reaktion geht durch. Beim <b>Klotz</b> sind es zu wenige Treffer, die Wärme reicht nicht zum Selbstverstärken.</div>
+        </div></li>
+      <li>🔴 <b>Transfer:</b> Erkläre mit allem, was du gesehen hast, warum eine <b>Mehl-Staubwolke</b> explodieren kann, ein <b>Mehlhaufen</b> aber nicht.
+        <div class="schreiblinie"></div>
+        <div class="hilfe-stufen">
+          <button class="hilfe-btn" type="button">Bitte etwas Hilfe <span class="cnt">(0 von 3)</span></button>
+          <div class="stufe"><b class="st-h">💡 Kleiner Tipp:</b> Mehl ist in beiden Fällen schon fein. Was hat die <b>Staubwolke</b>, das dem <b>Haufen</b> fehlt?</div>
+          <div class="stufe"><b class="st-h">💡 Mehr Hilfe:</b> Stichwort: <b>Luft (Sauerstoff) zwischen den Körnern</b>. Denk an den Versuch „Platz dazwischen".</div>
+          <div class="stufe loes"><b class="st-h">✅ Lösung:</b> Im <b>Haufen</b> liegen die Körner dicht an dicht → der Sauerstoff kommt nicht hinein. In der <b>Staubwolke</b> ist viel Luft dazwischen → Sauerstoff trifft jedes Körnchen von allen Seiten → blitzschnelle Reaktion mit viel Wärme auf einmal = Explosion.</div>
+        </div></li>
+      <li>⭐ <b>Forscher-Spezial (für Profis!):</b> Wähle <b>„Staubwolke"</b> und setze den Haken bei <b>„Reaktionswärme"</b>. Starte und beobachte gleichzeitig das <b>Thermometer</b> und die <b>Aufprälle/Sek.</b> (= Reaktions-Tempo). Wie verändern sich beide Werte mit der Zeit? Stelle eine begründete Vermutung auf, <b>wie Temperatur und Reaktions-Tempo zusammenhängen</b> – und erkläre damit, warum sich die Reaktion <b>selbst immer weiter beschleunigt</b>.
+        <div class="schreiblinie"></div><div class="schreiblinie"></div>
+        <div class="hilfe-stufen">
+          <button class="hilfe-btn" type="button">Bitte etwas Hilfe <span class="cnt">(0 von 3)</span></button>
+          <div class="stufe"><b class="st-h">💡 Kleiner Tipp:</b> Beobachte, ob <b>beide</b> Werte (Temperatur und Aufprälle/Sek.) gleichzeitig steigen.</div>
+          <div class="stufe"><b class="st-h">💡 Mehr Hilfe:</b> Überlege die Kette Schritt für Schritt: mehr Treffer → mehr Reaktion → mehr <b>Wärme</b> frei → Teilchen <b>schneller</b> → …?</div>
+          <div class="stufe loes"><b class="st-h">✅ Lösung:</b> Höhere Temperatur → schnellere Teilchen → <b>mehr Treffer/Sek.</b> (= höheres Reaktions-Tempo). Weil die Reaktion selbst <b>Wärme</b> freisetzt, steigt die Temperatur weiter → noch mehr Treffer → noch mehr Wärme … Ein sich selbst verstärkender Kreislauf (<b>Rückkopplung</b>), bis die Reaktion „durchgeht".</div>
+        </div></li>
+    </ol>
+  </div>
+
+  <div class="karte infobox" style="margin-top:16px;">
+    <h3 style="color:var(--blau); margin-top:0;">💡 Das sagen Chemiker dazu: die <i>Stoßtheorie</i></h3>
+    <p style="margin-bottom:0;">Teilchen reagieren nur, wenn sie <b>zusammenstoßen</b>. Mehr Treffer pro Sekunde = schnellere Reaktion. Es gibt zwei Wege, mehr Treffer zu bekommen: <b>(1) mehr Oberfläche</b> (fein zerteilt, mit Platz dazwischen) und <b>(2) höhere Temperatur</b> – warme Teilchen flitzen schneller und stoßen häufiger und heftiger zusammen.</p>
+  </div>
+
+  <div class="karte warnbox" style="margin-top:12px;">
+    <h3 style="color:#d7263d; margin-top:0;">🔥 Der „Schneeball-Effekt": Reaktionswärme</h3>
+    <p style="margin-bottom:0;">Setze in der Simulation den Haken bei <b>„Reaktionswärme"</b>. Beim Verbrennen wird nämlich <b>Wärme frei</b>. Diese Wärme macht die Teilchen <b>noch schneller</b> → es gibt <b>noch mehr Treffer</b> → es wird <b>noch wärmer</b> … Ein sich selbst verstärkender Kreislauf! Beim <b>Klotz</b> reicht die Wärme nicht – er glimmt nur. Bei der <b>Staubwolke</b> schaukelt es sich hoch und die Reaktion <b>geht durch</b> (Feuer breitet sich aus, Staubexplosion). Zum Anfangen braucht es aber immer einen <b>Zündfunken</b>.</p>
+  </div>
+
+  <div class="frage-box" style="margin-top:14px;">
+    <b>Messen & Vergleichen:</b> Stoppuhr-Zeit bis 20 % (Temperatur gleich lassen!):
+    <div style="margin-top:6px; font-size:.95rem;">Klotz: ____ s &nbsp;|&nbsp; grob: ____ s &nbsp;|&nbsp; fein: ____ s &nbsp;|&nbsp; Staubwolke: ____ s</div>
+    <div class="schreiblinie"></div>
+    <b>Temperatur-Test:</b> Stelle die Staubwolke ein. Zeit bei <b>kalt</b>: ____ s &nbsp;|&nbsp; bei <b>heiß</b>: ____ s
+    <div class="schreiblinie"></div>
+  </div>
+
+  <h3 style="text-align:center; margin-top:28px;">🔬 Bonus-Level: Das Chemiker-Mikroskop</h3>
+  <p style="text-align:center; max-width:860px; margin:6px auto 14px; font-size:.95rem;">
+    Jetzt zoomen wir ganz tief in <b>ein einziges Klötzchen</b> hinein. Die <b>schwarzen</b> Kreise sind <b>Kohlenstoff-Teilchen (C)</b>, dicht gepackt – das ist der feste Stoff. Die <b>blauen</b> sind <b>Sauerstoff-Teilchen (O)</b>. Trifft ein O ein C, <b>verbinden sie sich zu CO</b> und schwirren als Gas davon. Trifft das CO später noch ein O, wird daraus <b>CO₂ (O–C–O)</b>. <b>Zähle die Kreise vorher und nachher!</b>
+  </p>
+
+  <div class="poe" data-unlock="micStart">
+    <div class="poe-q">🔮 <b>Erst vorhersagen:</b> Du zählst zu Beginn 16 schwarze (C) und 40 blaue (O) Kreise. Was glaubst du – wie viele C- und O-Kreise gibt es <b>nach</b> der Reaktion?</div>
+    <div class="poe-opts">
+      <button class="poe-opt">Weniger Kreise als vorher</button>
+      <button class="poe-opt">Genauso viele wie vorher</button>
+      <button class="poe-opt">Mehr Kreise als vorher</button>
+    </div>
+    <div class="poe-after">✏️ Vorhersage gespeichert! Starte das Stoßen und <b>zähle am Ende noch einmal nach</b>.</div>
+  </div>
+
+  <div class="sim-box">
+    <div class="stage" style="max-width:520px;">
+      <canvas id="cvMic" width="480" height="300"></canvas>
+    </div>
+    <div class="mic-counts">
+      <div class="mc c">C-Teilchen: <b id="cC">16</b></div>
+      <div class="mc o">O-Teilchen: <b id="cO">40</b></div>
+      <div class="mc co">CO: <b id="cCO">0</b></div>
+      <div class="mc co">CO₂: <b id="cCO2">0</b></div>
+    </div>
+    <div class="controls" style="justify-content:center;">
+      <button id="micStart" disabled>▶ Stoßen starten</button>
+      <button id="micReset" class="sek">↺ Neustart</button>
+    </div>
+    <div class="lock-hint" id="lockMic" style="text-align:center;">🔒 Gib erst oben in der <b>lila Vorhersage-Box</b> deinen Tipp ab.</div>
+    <div class="legende">
+      <span><i class="dot" style="background:#222"></i> Kohlenstoff C</span>
+      <span><i class="dot" style="background:#1e72d6"></i> Sauerstoff O</span>
+      <span>⚫🔵 = CO &nbsp;·&nbsp; 🔵⚫🔵 = CO₂</span>
+    </div>
+    <div class="hinweis" id="micHint">Zähle zuerst: 16 C und 40 O. Dann „Stoßen starten" – und am Ende noch einmal zählen!</div>
+    <p style="text-align:center; font-size:.8rem; color:#999; margin:6px 0 0;">(Vereinfachtes Modell: erst C + O → CO, dann CO + O → CO₂)</p>
+  </div>
+  <div class="merksatz" style="margin-top:12px;">
+    🧠 <b>Aha – fülle die Lücken:</b>
+    <p style="margin:8px 0 0;">Beim Reagieren verschwindet <span class="luecke"></span> Teilchen! Es sind nachher <span class="luecke"></span> viele C und O wie vorher – sie haben sich nur <span class="luecke"></span> verbunden (zu CO und CO₂). Das nennt man die <span class="luecke" style="min-width:130px;"></span> der Masse.</p>
+    <div class="hilfe">
+      <details><summary>💡 Tipp anzeigen</summary>
+        <div class="inhalt">Zähle im Mikroskop die schwarzen (C) und blauen (O) Kreise <b>vor</b> dem Start und <b>am Ende</b>. Vergleiche die Zahlen! Denk daran: Atome gehen nicht verloren – sie ordnen sich nur <i>um</i>.</div>
+      </details>
+      <details class="loesung"><summary>✅ Lösung anzeigen</summary>
+        <div class="inhalt">Beim Reagieren verschwindet <b>kein</b> Teilchen! Es sind nachher <b>genauso</b> viele C und O wie vorher – sie haben sich nur <b>neu</b> verbunden. Das nennt man die <b>Erhaltung</b> der Masse.</div>
+      </details>
+    </div>
+  </div>
+
+  <!-- 4 ERGEBNIS -->
+  <h2><span class="num">4</span> Das habe ich gelernt</h2>
+  <div class="merksatz">
+    <p style="font-size:1.05rem;">🧠 <b>Merksatz – fülle die Lücken:</b></p>
+    <p style="margin:8px 0 0;">Eine Reaktion läuft umso <span class="luecke"></span>, je <span class="luecke" style="min-width:60px;"></span> Teilchen pro Sekunde <span class="luecke" style="min-width:140px;"></span>. Das erreicht man durch:</p>
+    <p style="margin:8px 0 0;">① stärkeres <span class="luecke"></span> (mehr <span class="luecke"></span>) – aber nur mit <span class="luecke"></span> dazwischen,<br>
+    ② höhere <span class="luecke"></span> (schnellere Teilchen, mehr und heftigere Stöße).</p>
+    <p style="margin:8px 0 0;">Beim Verbrennen wird zusätzlich <span class="luecke"></span> frei – das kann die Reaktion <span class="luecke" style="min-width:150px;"></span>, bis sie „durchgeht".</p>
+    <div class="hilfe">
+      <details><summary>💡 Tipp: Wortspeicher anzeigen</summary>
+        <div class="inhalt">Setze passend ein: <i>Oberfläche · Platz · Temperatur · Wärme · schneller · mehr · zusammenstoßen · Zerteilen · selbst verstärken</i></div>
+      </details>
+      <details class="loesung"><summary>✅ Lösung anzeigen</summary>
+        <div class="inhalt">Eine Reaktion läuft umso <b>schneller</b>, je <b>mehr</b> Teilchen pro Sekunde <b>zusammenstoßen</b>. Das erreicht man durch ① stärkeres <b>Zerteilen</b> (mehr <b>Oberfläche</b>) – aber nur mit <b>Platz</b> dazwischen, und ② höhere <b>Temperatur</b>. Beim Verbrennen wird zusätzlich <b>Wärme</b> frei – das kann die Reaktion <b>selbst verstärken</b>, bis sie „durchgeht".</div>
+      </details>
+    </div>
+  </div>
+
+  <!-- 5 AUFGABEN -->
+  <h2><span class="num">5</span> Aufgaben zum Nachdenken</h2>
+  <div class="karte">
+    <ol class="fragen">
+      <li>Erkläre, warum <b>Holzspäne</b> schneller brennen als ein <b>Holzscheit</b>.
+        <div class="schreiblinie"></div><div class="schreiblinie"></div></li>
+      <li>Warum bewahrt man Lebensmittel im <b>Kühlschrank</b> auf? Erkläre mit „Teilchen" und „Temperatur", warum Milch dort langsamer sauer wird.
+        <div class="schreiblinie"></div></li>
+      <li>Ein <b>Haufen Mehl</b> brennt fast nicht, aufgewirbelter <b>Mehlstaub</b> kann <b>explodieren</b> – obwohl beide gleich fein sind! Erkläre mit „Oberfläche" und „Platz dazwischen".
+        <div class="schreiblinie"></div><div class="schreiblinie"></div></li>
+      <li><b>Knobel:</b> Ein Würfel wird in 8 kleine Würfel zerschnitten. Die <b>Menge</b> bleibt gleich – die <b>Oberfläche</b> wird: &nbsp; ☐ kleiner &nbsp; ☐ gleich &nbsp; ☐ größer</li>
+    </ol>
+  </div>
+
+  <!-- 6 QUIZ -->
+  <h2><span class="num">6</span> Könnens-Quiz: Bist du fit?</h2>
+  <p>Klicke bei jeder Frage die Antwort an, die du für richtig hältst. Du bekommst sofort eine Rückmeldung.</p>
+  <div class="quiz" id="quiz"></div>
+  <p style="text-align:center; font-size:.85rem; color:#7a6c4f; margin-top:8px;">💡 Tipp für die Lehrkraft: Diese Fragen lassen sich auch als <b>Kahoot!</b> nutzen – einfach übernehmen.</p>
+
+  <!-- SELBSTCHECK -->
+  <h2><span class="num">✓</span> Das kann ich jetzt</h2>
+  <p>Sei ehrlich zu dir selbst und tippe pro Zeile eine Ampel an. So siehst du, was du schon sicher kannst – und wo sich ein zweiter Blick lohnt.</p>
+  <div class="selfcheck">
+    <div class="sc-leg">🔴 = noch nicht &nbsp;·&nbsp; 🟡 = fast &nbsp;·&nbsp; 🟢 = sicher &nbsp; — bei 🔴/🟡 hilft ein Blick auf die <b>Hilfekärtchen</b> und <b>Lösungen</b> oben.</div>
+    <div class="sc-row"><span class="sc-txt">Ich kann erklären, was „<b>umgesetzt</b>" bedeutet.</span><span class="sc-amp"><button>🔴</button><button>🟡</button><button>🟢</button></span></div>
+    <div class="sc-row"><span class="sc-txt">Ich kann erklären, warum ein <b>fein zerteilter</b> Stoff schneller reagiert als ein großer Klotz.</span><span class="sc-amp"><button>🔴</button><button>🟡</button><button>🟢</button></span></div>
+    <div class="sc-row"><span class="sc-txt">Ich kann erklären, warum es zwischen den Teilchen <b>Platz (Luft)</b> braucht.</span><span class="sc-amp"><button>🔴</button><button>🟡</button><button>🟢</button></span></div>
+    <div class="sc-row"><span class="sc-txt">Ich kann erklären, wie die <b>Temperatur</b> das Reaktions-Tempo verändert.</span><span class="sc-amp"><button>🔴</button><button>🟡</button><button>🟢</button></span></div>
+    <div class="sc-row"><span class="sc-txt">Ich kann mit dem Teilchenmodell erklären, warum beim Reagieren <b>kein Atom verloren geht</b>.</span><span class="sc-amp"><button>🔴</button><button>🟡</button><button>🟢</button></span></div>
+    <div class="sc-row"><span class="sc-txt">Ich kann erklären, was beim „<b>Durchgehen</b>" einer Reaktion passiert (Selbstverstärkung).</span><span class="sc-amp"><button>🔴</button><button>🟡</button><button>🟢</button></span></div>
+  </div>
+
+  <p style="text-align:center; color:#9a8f78; font-size:.82rem; margin-top:30px;">Arbeitsblatt Chemie · Klasse 7 · Verbrennung & Zerteilungsgrad · Teilchenmodell · Temperatur</p>
+
+</div>
+
+<div id="hwcard"><span class="x" onclick="this.parentNode.classList.remove('show')">✕</span><span id="hwtext"></span></div>
+
+<script>
+(function(){
+  "use strict";
+  const canvas=document.getElementById('cv'), ctx=canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height, CELL=8, COLS=W/CELL|0, ROWS=H/CELL|0, MAXH=3, Rp=2.5;
+  const STEPS=[16,8,4,2,1];           // Brockengröße (Teiler von 16 -> immer 256 Zellen)
+  const GAPS =[0,8,5,3,2];
+  const NAMES=["Massiver Klotz","Grob zerteilt","Zerteilt","Fein (Pulver)","Staubwolke"];
+  const DRIFT=1.3;
+  // Temperatur / Rückkopplung
+  const TBASE_MIN=20, TBASE_MAX=520, TMAX=1100;   // °C
+  const GAIN=12, COOL=0.6;                         // Selbstverstärkung (Rückkopplung)
+  const $=id=>document.getElementById(id);
+
+  let grid=new Int8Array(COLS*ROWS), initial=0, eroded=0;
+  let pieces=[], particles=[], flashes=[];
+  let level=0, mode='setup', paused=false, driftT=0, runT=0;
+  let impactTimes=[], convTimes=[], heat=0;
+  let t20=null, t50=null, t100=null;
+
+  const idx=(r,c)=>r*COLS+c, inB=(r,c)=>r>=0&&r<ROWS&&c>=0&&c<COLS, solid=(r,c)=>inB(r,c)&&grid[idx(r,c)]>0;
+  const ease=t=> t<.5 ? 2*t*t : 1-Math.pow(-2*t+2,2)/2;
+
+  function layout(i){
+    const cs=STEPS[i], kper=16/cs, gap=GAPS[i];
+    const pkSpan=kper*cs, pc=Math.floor((COLS-pkSpan)/2), pr=Math.floor((ROWS-pkSpan)/2);
+    const pitch=cs+gap, dSpan=kper*pitch-gap, dc=Math.floor((COLS-dSpan)/2), dr=Math.floor((ROWS-dSpan)/2);
+    pieces=[];
+    for(let a=0;a<kper;a++) for(let b=0;b<kper;b++)
+      pieces.push({pCX:pc+a*cs, pCY:pr+b*cs, dCX:dc+a*pitch, dCY:dr+b*pitch, sz:cs});
+  }
+  function rasterize(){
+    grid.fill(0); initial=0; eroded=0;
+    for(const p of pieces) for(let r=p.dCY;r<p.dCY+p.sz;r++) for(let c=p.dCX;c<p.dCX+p.sz;c++)
+      if(inB(r,c)&&grid[idx(r,c)]===0){ grid[idx(r,c)]=MAXH; initial++; }
+  }
+  function spawn(){
+    particles=[]; let n=70, tries=0;
+    while(particles.length<n && tries<9000){ tries++;
+      const x=Rp+1+Math.random()*(W-2*Rp-2), y=Rp+1+Math.random()*(H-2*Rp-2);
+      if(solid(Math.floor(y/CELL),Math.floor(x/CELL))) continue;
+      const a=Math.random()*Math.PI*2; particles.push({x,y,vx:Math.cos(a),vy:Math.sin(a)});
+    }
+  }
+  function setupLevel(i){
+    level=i; layout(i); mode='setup'; paused=false; driftT=0; runT=0;
+    flashes=[]; impactTimes=[]; convTimes=[]; heat=0; t20=t50=t100=null;
+    grid.fill(0); initial=0; eroded=0; particles=[];
+    updateInfo();
+  }
+  function start(){ if(mode==='setup'||mode==='done'){ mode='drift'; driftT=0; paused=false; setBtn(); } }
+  function beginRun(){ rasterize(); spawn(); mode='run'; runT=0; heat=0; t20=t50=t100=null; impactTimes=[]; convTimes=[]; setBtn(); }
+
+  function hit(r,c,ix,iy,now){
+    impactTimes.push(now); flashes.push({x:ix,y:iy,t:1});
+    let h=grid[idx(r,c)]-1;
+    if(h<=0){ grid[idx(r,c)]=0; eroded++; convTimes.push(now); flashes.push({x:ix,y:iy,t:1,big:true}); }
+    else grid[idx(r,c)]=h;
+  }
+  function move(d,now){
+    for(const pt of particles){
+      let nx=pt.x+pt.vx*d;
+      if(nx<Rp){pt.x=Rp;pt.vx=Math.abs(pt.vx);} else if(nx>W-Rp){pt.x=W-Rp;pt.vx=-Math.abs(pt.vx);}
+      else{ const c=Math.floor(nx/CELL), r=Math.floor(pt.y/CELL); if(solid(r,c)){hit(r,c,nx,pt.y,now);pt.vx=-pt.vx;} else pt.x=nx; }
+      let ny=pt.y+pt.vy*d;
+      if(ny<Rp){pt.y=Rp;pt.vy=Math.abs(pt.vy);} else if(ny>H-Rp){pt.y=H-Rp;pt.vy=-Math.abs(pt.vy);}
+      else{ const c=Math.floor(pt.x/CELL), r=Math.floor(ny/CELL); if(solid(r,c)){hit(r,c,pt.x,ny,now);pt.vy=-pt.vy;} else pt.y=ny; }
+    }
+  }
+  function stepRun(dt,sp,now){
+    const dist=sp*dt, subs=Math.max(1,Math.ceil(dist/(CELL*0.8))), sdt=dt/subs;
+    for(let s=0;s<subs;s++) move(sp*sdt,now);
+    runT+=dt;
+    const e=initial?eroded/initial:0;
+    if(t20==null && e>=0.20) t20=runT;
+    if(t50==null && e>=0.50) t50=runT;
+    if(e>=0.999 && t100==null){ t100=runT; mode='done'; setBtn(); }
+  }
+
+  // Temperatur
+  const baseTemp=()=> TBASE_MIN + ($('temp').value/100)*(TBASE_MAX-TBASE_MIN);
+  const convRate=(now)=>{ convTimes=convTimes.filter(t=>now-t<=1000); return convTimes.length; };
+  const teff=()=> Math.min(TMAX, baseTemp() + ((mode==='run')?heat:0));
+  const speedFromTemp=()=> 14 + teff()*0.34;
+
+  function drawPieces(tt){
+    for(const p of pieces){
+      const cx=(p.pCX+(p.dCX-p.pCX)*tt)*CELL, cy=(p.pCY+(p.dCY-p.pCY)*tt)*CELL, s=p.sz*CELL;
+      ctx.fillStyle='#8a5a2b'; ctx.fillRect(cx+0.6,cy+0.6,s-1.2,s-1.2);
+      ctx.strokeStyle='rgba(60,38,15,.85)'; ctx.lineWidth=1; ctx.strokeRect(cx+0.6,cy+0.6,s-1.2,s-1.2);
+    }
+  }
+  function drawGrid(){
+    for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+      const h=grid[idx(r,c)]; if(h<=0) continue;
+      const t=1-h/MAXH;
+      const cr=Math.round(138+(255-138)*t), cg=Math.round(90+(122-90)*t), cb=Math.round(43+(24-43)*t);
+      ctx.fillStyle='rgba('+cr+','+cg+','+cb+','+(1-0.55*t)+')';
+      ctx.fillRect(c*CELL,r*CELL,CELL,CELL);
+    }
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    if(mode==='setup'){ drawPieces(0); }
+    else if(mode==='drift'){ drawPieces(ease(Math.min(driftT/DRIFT,1))); }
+    else{
+      drawGrid();
+      ctx.fillStyle='#1e72d6';
+      for(const pt of particles){ ctx.beginPath(); ctx.arc(pt.x,pt.y,Rp,0,7); ctx.fill(); }
+      for(const f of flashes){
+        const rad=f.big?8*f.t+2:4.5*f.t;
+        ctx.beginPath(); ctx.fillStyle=f.big?'rgba(255,150,30,'+(f.t*0.9)+')':'rgba(255,235,140,'+(f.t*0.9)+')';
+        ctx.arc(f.x,f.y,rad,0,7); ctx.fill();
+      }
+    }
+  }
+
+  function tColor(frac){
+    // kalt (blau) -> warm (orange) -> heiß (rot)
+    let r,g,b;
+    if(frac<0.5){ const u=frac/0.5; r=Math.round(47+(255-47)*u); g=Math.round(134+(122-134)*u); b=Math.round(214+(24-214)*u); }
+    else{ const u=(frac-0.5)/0.5; r=Math.round(255+(215-255)*u); g=Math.round(122+(38-122)*u); b=Math.round(24+(38-24)*u); }
+    return 'rgb('+r+','+g+','+b+')';
+  }
+  function setBtn(){
+    const b=$('btnStart');
+    if(mode==='setup') b.textContent='▶ Reaktion starten';
+    else if(mode==='drift') b.textContent='… Klotz zerfällt';
+    else if(mode==='done') b.textContent='✓ fertig (↺ für neu)';
+    else b.textContent = paused?'▶ Weiter':'⏸ Pause';
+  }
+  function updateInfo(){
+    const kper=16/STEPS[level];
+    $('stLevel').innerHTML='<b>'+NAMES[level]+'</b>';
+    $('stCount').textContent = (kper*kper)+' Brocken · Oberfläche ×'+kper;
+    const tips=["Ein massiver Klotz: Sauerstoff kommt nur außen hin.",
+                "Erste Risse – etwas mehr Oberfläche.",
+                "Mehr Brocken, kleine Lücken entstehen.",
+                "Feines Pulver – Teilchen dringen in die Lücken.",
+                "Staubwolke: Treffer von allen Seiten – gleich knallt's!"];
+    if(mode==='setup') $('hinweis').textContent=tips[level];
+  }
+  function fmt(t){ return t==null?'–':(t.toFixed(1).replace('.',',')+' s'); }
+
+  let last=performance.now(), uiAcc=0;
+  function loop(now){
+    let dt=(now-last)/1000; last=now; if(dt>0.05) dt=0.05;
+    if(mode==='drift' && !paused){ driftT+=dt; if(driftT>=DRIFT) beginRun(); }
+    else if(mode==='run' && !paused){
+      if($('feedback').checked){
+        const cr=convRate(now);
+        heat += (cr*GAIN - heat*COOL)*dt;
+        if(heat<0) heat=0;
+        const maxHeat=TMAX-baseTemp(); if(heat>maxHeat) heat=maxHeat;
+      } else heat=0;
+      stepRun(dt, speedFromTemp(), now);
+    }
+    for(const f of flashes) f.t-=dt*3.2; flashes=flashes.filter(f=>f.t>0);
+    draw();
+
+    uiAcc+=dt;
+    if(uiAcc>0.1){
+      uiAcc=0;
+      const e=initial?eroded/initial:0;
+      const T=teff(), frac=Math.max(0,Math.min(1,(T-TBASE_MIN)/(TMAX-TBASE_MIN)));
+      const col=tColor(frac);
+      $('thFill').style.height=(8+frac*92)+'%'; $('thFill').style.background=col; $('thBulb').style.background=col;
+      $('thVal').textContent=Math.round(T)+'°';
+      $('roUhr').innerHTML=(mode==='run'||mode==='done')?fmt(runT).replace(' s','&nbsp;s'):'0,0&nbsp;s';
+      $('roPct').innerHTML=Math.round(e*100)+'&nbsp;%';
+      let rate=0; if(mode==='run'){ impactTimes=impactTimes.filter(t=>now-t<=1000); rate=impactTimes.length; }
+      $('roHit').textContent=rate;
+      if(mode==='run'){
+        if($('feedback').checked && T>900) $('hinweis').innerHTML='🔥 <b style="color:#d7263d">Die Reaktion geht durch!</b>';
+        else if($('feedback').checked && heat>40) $('hinweis').textContent='Es wird wärmer – die Reaktion verstärkt sich selbst!';
+        else $('hinweis').textContent='Reaktion läuft – beobachte die Stoppuhr bei 20 %.';
+      }
+      if(mode==='done') $('hinweis').textContent='Fertig! Notiere die Zeit und probiere etwas anderes aus.';
+      if(mode==='drift') $('hinweis').textContent='Gleiche Menge Brennstoff – nur feiner verteilt!';
+    }
+    requestAnimationFrame(loop);
+  }
+
+  $('fine').addEventListener('input', ()=> setupLevel(parseInt($('fine').value,10)) );
+  $('btnStart').addEventListener('click', ()=>{
+    if(mode==='setup'||mode==='done') start();
+    else if(mode==='run'){ paused=!paused; setBtn(); }
+  });
+  $('btnReset').addEventListener('click', ()=> setupLevel(level) );
+
+  setupLevel(0); setBtn();
+  requestAnimationFrame(loop);
+})();
+</script>
+
+<script>
+/* === Bonus-Level: Chemiker-Mikroskop (C + O -> CO, Teilchenzahl bleibt erhalten) === */
+(function(){
+  "use strict";
+  const cv=document.getElementById('cvMic'); if(!cv) return;
+  const ctx=cv.getContext('2d'), W=cv.width, H=cv.height;
+  const NC=16, NO=40, rC=12, rO=5, PITCH=2*rC;   // 16 C (4x4, berührend), 40 O
+  const SPEED=78;
+  const cx0=140, cy0=H/2;                          // Mitte des C-Klötzchens
+  let Cs=[], Os=[], MOL=[], running=false, started=false, last=performance.now(), clock=0;
+
+  function build(){
+    Cs=[]; Os=[]; MOL=[]; running=false; started=false;
+    const ox=cx0-1.5*PITCH, oy=cy0-1.5*PITCH;       // 4x4 Gitter zentriert
+    for(let i=0;i<4;i++) for(let j=0;j<4;j++) Cs.push({x:ox+i*PITCH, y:oy+j*PITCH, solid:true, ph:Math.random()*6.28});
+    let tries=0;
+    while(Os.length<NO && tries<6000){ tries++;
+      const x=rO+2+Math.random()*(W-2*rO-4), y=rO+2+Math.random()*(H-2*rO-4);
+      // nicht im Klötzchen starten
+      let bad=false; for(const c of Cs){ const dx=x-c.x,dy=y-c.y; if(dx*dx+dy*dy<(rO+rC+2)*(rO+rC+2)){bad=true;break;} }
+      if(bad) continue;
+      const a=Math.random()*Math.PI*2; Os.push({x,y,vx:Math.cos(a),vy:Math.sin(a)});
+    }
+    setBtn(); updateCounts();
+    hint('Zähle zuerst: 16 C und 40 O. Dann „Stoßen starten" – und am Ende noch einmal zählen!');
+  }
+  function step(dt){
+    const d=SPEED*dt;
+    // freie O bewegen + Reaktion mit Oberflächen-C  =>  CO
+    for(let k=Os.length-1;k>=0;k--){
+      const o=Os[k];
+      o.x+=o.vx*d; o.y+=o.vy*d;
+      if(o.x<rO){o.x=rO;o.vx=Math.abs(o.vx);} if(o.x>W-rO){o.x=W-rO;o.vx=-Math.abs(o.vx);}
+      if(o.y<rO){o.y=rO;o.vy=Math.abs(o.vy);} if(o.y>H-rO){o.y=H-rO;o.vy=-Math.abs(o.vy);}
+      for(const c of Cs){
+        if(!c.solid) continue;
+        const dx=o.x-c.x, dy=o.y-c.y, rr=rO+rC;
+        if(dx*dx+dy*dy < rr*rr){
+          // C + O -> CO : C verlässt das Gitter, beide driften nach außen
+          c.solid=false;
+          let nx=c.x-cx0, ny=c.y-cy0, len=Math.hypot(nx,ny)||1; nx/=len; ny/=len;
+          MOL.push({x:c.x, y:c.y, vx:nx, vy:ny, type:'CO'});
+          Os.splice(k,1);
+          break;
+        }
+      }
+    }
+    // Moleküle bewegen ; CO + O -> CO2
+    for(const m of MOL){
+      m.x+=m.vx*d; m.y+=m.vy*d;
+      const rr=rC+2*rO;
+      if(m.x<rr){m.x=rr;m.vx=Math.abs(m.vx);} if(m.x>W-rr){m.x=W-rr;m.vx=-Math.abs(m.vx);}
+      if(m.y<rr){m.y=rr;m.vy=Math.abs(m.vy);} if(m.y>H-rr){m.y=H-rr;m.vy=-Math.abs(m.vy);}
+      if(m.type==='CO'){
+        for(let k=Os.length-1;k>=0;k--){
+          const o=Os[k], dx=o.x-m.x, dy=o.y-m.y, rr2=rC+2*rO;
+          if(dx*dx+dy*dy < rr2*rr2){ m.type='CO2'; Os.splice(k,1); break; }
+        }
+      }
+    }
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // feste C (mit leichtem Zittern = Wärmebewegung)
+    for(const c of Cs){ if(!c.solid) continue;
+      const jx=c.x+Math.sin(clock*7+c.ph)*1.6, jy=c.y+Math.cos(clock*6+c.ph)*1.6;
+      ctx.fillStyle='#222'; ctx.beginPath(); ctx.arc(jx,jy,rC,0,7); ctx.fill();
+    }
+    // freie O – erst ab Start sichtbar
+    if(started){
+      ctx.fillStyle='#1e72d6';
+      for(const o of Os){ ctx.beginPath(); ctx.arc(o.x,o.y,rO,0,7); ctx.fill(); }
+    }
+    // Moleküle
+    for(const m of MOL){
+      if(m.type==='CO'){
+        ctx.fillStyle='#222';    ctx.beginPath(); ctx.arc(m.x,m.y,rC*0.78,0,7); ctx.fill();
+        ctx.fillStyle='#1e72d6'; ctx.beginPath(); ctx.arc(m.x+rC*0.78,m.y,rO+1,0,7); ctx.fill();
+      } else { // CO2 : O-C-O
+        ctx.fillStyle='#1e72d6'; ctx.beginPath(); ctx.arc(m.x-rC*0.72,m.y,rO+1,0,7); ctx.fill();
+        ctx.fillStyle='#222';    ctx.beginPath(); ctx.arc(m.x,m.y,rC*0.78,0,7); ctx.fill();
+        ctx.fillStyle='#1e72d6'; ctx.beginPath(); ctx.arc(m.x+rC*0.72,m.y,rO+1,0,7); ctx.fill();
+      }
+    }
+  }
+  function solidCount(){ let n=0; for(const c of Cs) if(c.solid) n++; return n; }
+  function nType(t){ let n=0; for(const m of MOL) if(m.type===t) n++; return n; }
+  function updateCounts(){
+    const nCO=nType('CO'), nCO2=nType('CO2');
+    document.getElementById('cC').textContent  = solidCount()+nCO+nCO2;   // immer 16
+    document.getElementById('cO').textContent  = Os.length+nCO+2*nCO2;    // immer 40
+    document.getElementById('cCO').textContent = nCO;
+    document.getElementById('cCO2').textContent= nCO2;
+  }
+  function hint(t){ document.getElementById('micHint').textContent=t; }
+  function setBtn(){ document.getElementById('micStart').textContent = running?'⏸ Pause':'▶ Stoßen starten'; }
+
+  function loop(now){
+    let dt=(now-last)/1000; last=now; if(dt>0.05) dt=0.05;
+    clock=now/1000;
+    if(running){
+      step(dt);
+      if(solidCount()===0 && nType('CO')===0){ running=false; setBtn(); hint('Fertig! Zähle nach: immer noch 16 C und 40 O – nur neu verbunden (zu CO₂).'); }
+      else if(solidCount()===0){ hint('Klötzchen ist weg – jetzt schnappt sich jedes CO noch ein O und wird zu CO₂.'); }
+      else hint('Erst C + O → CO, dann CO + O → CO₂. Die Gesamtzahl der C und O bleibt gleich!');
+    }
+    draw(); updateCounts();
+    requestAnimationFrame(loop);
+  }
+
+  document.getElementById('micStart').addEventListener('click', ()=>{ running=!running; if(running) started=true; setBtn(); });
+  document.getElementById('micReset').addEventListener('click', build);
+  build();
+  requestAnimationFrame(loop);
+})();
+</script>
+
+<script>
+/* === Hilfewörter (Hilfekärtchen-Popup) === */
+(function(){
+  const card=document.getElementById('hwcard'), txt=document.getElementById('hwtext');
+  if(!card) return;
+  document.querySelectorAll('.hw').forEach(el=>{
+    el.addEventListener('click', e=>{
+      e.stopPropagation();
+      txt.innerHTML = el.getAttribute('data-help')||'';
+      card.classList.add('show');
+      const r=el.getBoundingClientRect();
+      let top=r.bottom+8, left=Math.min(r.left, window.innerWidth-300);
+      if(left<8) left=8;
+      card.style.left=left+'px'; card.style.top=top+'px';
+    });
+  });
+  document.addEventListener('click', e=>{ if(!card.contains(e.target)) card.classList.remove('show'); });
+})();
+
+/* === Könnens-Quiz === */
+(function(){
+  const box=document.getElementById('quiz'); if(!box) return;
+  const QS=[
+    {f:"Du willst deinen Kakao möglichst schnell süßen. Was löst sich am schnellsten?",
+     o:["Ein großer Würfelzucker","Puderzucker (fein gemahlen)","Beide gleich schnell"], a:1,
+     fb:"Fein gemahlen = riesige Oberfläche → viele Treffer der Wasser-Teilchen → schnellstes Lösen."},
+    {f:"Warum reagiert ein fein zerteilter Stoff schneller als ein großer Klotz?",
+     o:["Er hat eine größere Oberfläche, also mehr Treffer pro Sekunde","Er besteht aus anderen Teilchen","Er hat mehr Masse"], a:0,
+     fb:"Gleiche Menge, aber viel mehr Oberfläche → mehr Zusammenstöße pro Sekunde."},
+    {f:"Ein Haufen feines Mehl brennt kaum, eine Mehl-Staubwolke kann explodieren. Warum?",
+     o:["Staub ist ein anderer Stoff","In der Wolke ist viel Luft zwischen den Körnern","Der Haufen ist zu schwer"], a:1,
+     fb:"Nur mit Platz/Luft dazwischen kommt der Sauerstoff von allen Seiten an jedes Körnchen."},
+    {f:"Wie wirkt eine höhere Temperatur auf die Teilchen?",
+     o:["Sie werden langsamer","Sie bewegen sich schneller und stoßen häufiger zusammen","Sie verschwinden"], a:1,
+     fb:"Wärmer = schnellere Teilchen = mehr und heftigere Stöße = schnellere Reaktion."},
+    {f:"Bei der Reaktion C + O → CO: Was passiert mit der Gesamtzahl der Kreise (= Atome)?",
+     o:["Es werden weniger Kreise (Atome)","Die Atome bleiben erhalten, nur neu verbunden","Es entstehen neue Atome aus dem Nichts"], a:1,
+     fb:"Erhaltung der Masse: kein Atom verschwindet, sie ordnen sich nur neu (zu CO/CO₂)."},
+    {f:"Warum kann sich ein Feuer von allein immer weiter beschleunigen?",
+     o:["Die freiwerdende Wärme macht die Teilchen schneller → noch mehr Treffer","Weil der Brennstoff schwerer wird","Weil heiße Luft nach oben steigt"], a:0,
+     fb:"Reaktionswärme → schnellere Teilchen → mehr Treffer → noch mehr Wärme: ein sich verstärkender Kreislauf."},
+  ];
+  let answered=0, correct=0;
+  QS.forEach((q,qi)=>{
+    const d=document.createElement('div'); d.className='q';
+    const fq=document.createElement('div'); fq.className='qf'; fq.textContent=(qi+1)+'. '+q.f; d.appendChild(fq);
+    const fb=document.createElement('div'); fb.className='fb';
+    q.o.forEach((opt,oi)=>{
+      const b=document.createElement('button'); b.className='opt'; b.textContent=opt;
+      b.addEventListener('click', ()=>{
+        if(d.dataset.done) return;
+        d.dataset.done='1'; answered++;
+        const btns=d.querySelectorAll('.opt');
+        btns.forEach((x,xi)=>{ x.classList.add('disabled'); if(xi===q.a) x.classList.add('correct'); });
+        if(oi===q.a){ correct++; fb.style.color='#1c6b3c'; fb.textContent='✅ Richtig! '+q.fb; }
+        else { b.classList.add('wrong'); fb.style.color='#a01624'; fb.textContent='❌ Nicht ganz. '+q.fb; }
+        showScore();
+      });
+      d.appendChild(b);
+    });
+    d.appendChild(fb); box.appendChild(d);
+  });
+  const sc=document.createElement('div'); sc.className='score'; sc.id='qscore'; box.appendChild(sc);
+  const bt=document.createElement('div'); bt.className='qbtns';
+  const rs=document.createElement('button'); rs.className='sek'; rs.textContent='↺ Neu starten';
+  rs.addEventListener('click', ()=>location.reload());
+  bt.appendChild(rs); box.appendChild(bt);
+  function showScore(){
+    const s=document.getElementById('qscore');
+    if(answered<QS.length){ s.textContent='Beantwortet: '+answered+' / '+QS.length+'  ·  Richtig: '+correct; }
+    else{
+      let msg = correct===QS.length ? '🏆 Super, alles richtig!' : (correct>=4 ? '👍 Gut gemacht!' : '💪 Schau dir die Tipps oben nochmal an.');
+      s.textContent='Ergebnis: '+correct+' von '+QS.length+' richtig – '+msg;
+    }
+  }
+  showScore();
+})();
+
+/* === POE: Erst-vorhersagen-Kästen (schalten Start-Button frei) === */
+(function(){
+  const hints={btnStart:'lockMain', micStart:'lockMic'};
+  document.querySelectorAll('.poe').forEach(p=>{
+    const unlockId=p.getAttribute('data-unlock');
+    p.querySelectorAll('.poe-opt').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        p.querySelectorAll('.poe-opt').forEach(x=>x.classList.remove('sel'));
+        b.classList.add('sel'); p.classList.add('done');
+        if(unlockId){
+          const btn=document.getElementById(unlockId);
+          if(btn) btn.disabled=false;
+          const lh=document.getElementById(hints[unlockId]);
+          if(lh) lh.style.display='none';
+        }
+      });
+    });
+  });
+})();
+
+/* === Selbst-Check (Ampel) === */
+(function(){
+  document.querySelectorAll('.sc-amp').forEach(g=>{
+    g.querySelectorAll('button').forEach(b=>{
+      b.addEventListener('click', ()=>{
+        g.querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+        b.classList.add('on');
+      });
+    });
+  });
+})();
+
+/* === Lernlandkarte abhaken === */
+(function(){
+  document.querySelectorAll('.lk-item').forEach(it=>{
+    it.addEventListener('click', ()=> it.classList.toggle('done'));
+  });
+})();
+
+/* === Gestufte Hilfe: Schritt für Schritt freischalten === */
+(function(){
+  document.querySelectorAll('.hilfe-stufen').forEach(box=>{
+    const btn=box.querySelector('.hilfe-btn');
+    const cnt=btn.querySelector('.cnt');
+    const steps=box.querySelectorAll('.stufe');
+    let i=0;
+    btn.addEventListener('click', ()=>{
+      if(i>=steps.length){            // Loesung war gezeigt -> alles zuruecksetzen
+        steps.forEach(s=>s.classList.remove('show'));
+        i=0;
+        btn.childNodes[0].textContent='Bitte etwas Hilfe ';
+      } else {
+        steps[i].classList.add('show'); i++;
+        if(i>=steps.length) btn.childNodes[0].textContent='↺ Hilfe ausblenden ';
+      }
+      cnt.textContent='('+i+' von '+steps.length+')';
+    });
+  });
+})();
+</script>
+</body>
+</html>
