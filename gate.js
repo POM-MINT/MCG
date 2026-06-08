@@ -11,7 +11,7 @@
    ===================================================================== */
 (function(){
   "use strict";
-  const PASSWORT = "MCG-Chemie";          // <— HIER das Klassen-Passwort ändern
+  const PASSWORT = "Ra_110";          // <— HIER das Klassen-Passwort ändern
   const KEY = "mcg_unlocked";
 
   // Schon in dieser Sitzung freigeschaltet? Dann nichts tun.
