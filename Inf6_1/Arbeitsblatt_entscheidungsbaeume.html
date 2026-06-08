@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KI & kluge Entscheidungen – Entscheidungsbäume · Informatik Klasse 6</title>
+<style>
+  :root{
+    --indigo:#4f46e5; --indigo-d:#3730a3; --teal:#0ea5a4; --gelb:#ffab19;
+    --gruen:#2e9e5b; --tinte:#1f2430; --linie:#dfe3ee; --grau:#f3f4fb; --blau:#2563eb;
+  }
+  *{box-sizing:border-box}
+  body{font-family:"Segoe UI",system-ui,Arial,sans-serif; color:var(--tinte); margin:0; background:#f7f8fc; line-height:1.55;}
+  .wrap{max-width:980px; margin:0 auto; padding:24px 18px 60px;}
+  header.titel{background:linear-gradient(120deg,#4f46e5,#0ea5a4); color:#fff; border-radius:18px; padding:22px 26px; margin-bottom:18px; box-shadow:0 6px 18px rgba(79,70,229,.28);}
+  header.titel h1{margin:0 0 4px; font-size:1.65rem;}
+  header.titel p{margin:0; opacity:.96;}
+  .namezeile{display:flex; gap:14px; flex-wrap:wrap; margin-top:14px; font-size:.9rem;}
+  .namezeile span{background:rgba(255,255,255,.18); padding:4px 12px; border-radius:30px;}
+  h2{font-size:1.26rem; margin:34px 0 12px; color:var(--indigo-d); border-bottom:3px solid var(--indigo); padding-bottom:6px; display:flex; align-items:center; gap:10px;}
+  h2 .num{background:var(--indigo); color:#fff; width:30px; height:30px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:1rem; flex:0 0 auto;}
+  h3{font-size:1.05rem; margin:18px 0 6px; color:var(--indigo-d);}
+  p{margin:8px 0;}
+  .karte{background:#fff; border:1px solid var(--linie); border-radius:14px; padding:18px 20px; margin:14px 0; box-shadow:0 2px 6px rgba(20,20,60,.04);}
+  .merksatz{background:#eef0fe; border:2px dashed var(--indigo); border-radius:14px; padding:16px 20px;}
+  .merksatz b{color:var(--indigo-d);}
+  .alltag{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin:10px 0;}
+  .alltag .item{background:#fff; border:1px solid var(--linie); border-radius:14px; padding:14px; text-align:center;}
+  .alltag .item .ic{font-size:2.1rem;}
+  .alltag .item p{font-size:.9rem; margin:6px 0 0;}
+  .schreiblinie{border-bottom:1.5px dotted #aeb4c8; height:22px; margin:10px 0;}
+  ol.fragen{padding-left:22px;} ol.fragen li{margin:12px 0;}
+  .frage-box{background:#e8fbfa; border-left:5px solid var(--teal); border-radius:8px; padding:12px 16px;}
+  .infobox{background:#eef0fe; border-left:5px solid var(--indigo); border-radius:8px; padding:12px 16px;}
+  .badge{display:inline-block; background:#e0e7ff; color:var(--indigo-d); font-size:.78rem; font-weight:700; padding:2px 10px; border-radius:20px;}
+  /* Baum / Simulation */
+  .sim-box{background:#fff; border:1px solid var(--linie); border-radius:16px; padding:16px; box-shadow:0 3px 10px rgba(20,20,60,.06);}
+  svg.tree{width:100%; height:auto; display:block;}
+  .node rect, .node ellipse{transition:all .2s;}
+  .controls{display:flex; gap:12px; flex-wrap:wrap; justify-content:center; align-items:center; margin:12px 0 4px;}
+  .controls button{font-size:1rem; font-weight:700; border:none; border-radius:30px; padding:11px 24px; cursor:pointer; color:#fff;}
+  .btn-ja{background:var(--gruen);} .btn-nein{background:#e0524d;} .btn-reset{background:#6b7280;}
+  .controls button:disabled{opacity:.4; cursor:not-allowed;}
+  .frageaktuell{text-align:center; font-size:1.12rem; font-weight:700; color:var(--indigo-d); min-height:1.5em; margin:6px 0;}
+  .status{text-align:center; font-size:.95rem; min-height:1.4em; color:#555; font-weight:600;}
+  .legende{display:flex; gap:18px; flex-wrap:wrap; justify-content:center; font-size:.86rem; margin-top:12px;}
+  .legende span{display:inline-flex; align-items:center; gap:6px;}
+  .sw{width:16px; height:16px; border-radius:4px; display:inline-block;}
+  /* Scratch-Blöcke */
+  .palette{display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin:8px 0;}
+  .pcat{display:inline-flex; align-items:center; gap:6px; font-size:.82rem; background:#fff; border:1px solid var(--linie); border-radius:20px; padding:3px 10px;}
+  .pdot{width:13px;height:13px;border-radius:50%;display:inline-block;}
+  .script{background:#f0f3fb; border:1px solid var(--linie); border-radius:12px; padding:14px; margin:10px 0; overflow-x:auto;}
+  .sb{display:inline-block; color:#fff; padding:7px 11px; border-radius:7px; font-size:.9rem; font-weight:600; margin:2px 0; box-shadow:0 1px 0 rgba(0,0,0,.18);}
+  .sb.sensing{background:#5cb1d6;} .sb.control{background:#ffab19;} .sb.looks{background:#9966ff;} .sb.operator{background:#59c059;} .sb.events{background:#ffbf00;}
+  .sbi{background:#fff; color:#222; border-radius:12px; padding:1px 9px; font-weight:700; display:inline-block; margin:0 2px;}
+  .sbrow{margin:3px 0;}
+  .indent{margin-left:26px; border-left:4px solid #e0a800; padding-left:8px;}
+  .indent2{margin-left:26px; border-left:4px solid #d98f00; padding-left:8px;}
+  /* Hilfe-Stufen */
+  .hilfe-stufen{margin-top:8px;}
+  .hilfe-btn{background:#eef0fe; border:1.5px solid #c7cdf7; color:var(--indigo-d); font-weight:700; border-radius:20px; padding:7px 16px; cursor:pointer; font-size:.88rem;}
+  .hilfe-btn:disabled{opacity:.65; cursor:default;}
+  .hilfe-stufen .stufe{display:none; margin-top:6px; background:#eef0fe; border:1px solid #c7cdf7; border-radius:9px; padding:8px 12px; font-size:.9rem;}
+  .hilfe-stufen .stufe.show{display:block;}
+  .hilfe-stufen .stufe.loes{background:#eafaf0; border-color:#bce8cf;}
+  .st-h{color:var(--indigo);} .stufe.loes .st-h{color:var(--gruen);}
+  /* Vergleich Baum vs KI */
+  .vs{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:10px 0;}
+  .vs .col{border:1px solid var(--linie); border-radius:14px; padding:12px 16px; background:#fff;}
+  .vs .col-a{border-top:5px solid #f59e0b;} .vs .col-b{border-top:5px solid var(--teal);}
+  .vs .col h3{margin:2px 0 6px; font-size:1rem;}
+  .vs .col ul{margin:0; padding-left:18px; font-size:.9rem;} .vs .col li{margin:5px 0;}
+  @media(max-width:680px){ .vs{grid-template-columns:1fr;} }
+  .linkbtn{display:inline-block; background:#4f46e5; color:#fff; font-weight:700; text-decoration:none; padding:10px 20px; border-radius:24px;}
+  .linkbtn:hover{background:#3730a3;}
+  /* POE */
+  .poe{background:#fff7e6; border:1.5px solid #ffd98a; border-left:5px solid var(--gelb); border-radius:12px; padding:12px 16px; margin:14px 0;}
+  .poe-q{font-size:.96rem; margin-bottom:8px;}
+  .poe-opts{display:flex; gap:8px; flex-wrap:wrap;}
+  .poe-opt{background:#fff; border:1.5px solid #ffd98a; border-radius:20px; padding:7px 14px; cursor:pointer; font-size:.92rem;}
+  .poe-opt.sel{background:#f59e0b; border-color:#f59e0b; color:#fff; font-weight:700;}
+  .poe-after{display:none; margin-top:10px; font-size:.9rem; color:#92600a;}
+  .poe.done .poe-after{display:block;}
+  /* Quiz */
+  .quiz .q{margin:0 0 16px; padding-bottom:12px; border-bottom:1px dashed #e3e6f0;}
+  .quiz .q:last-of-type{border-bottom:none;}
+  .quiz .qf{font-weight:700; margin-bottom:8px;}
+  .quiz .opt{display:block; width:100%; text-align:left; background:#f3f4fb; border:1.5px solid var(--linie); border-radius:10px; padding:9px 13px; margin:6px 0; cursor:pointer; font-size:.95rem;}
+  .quiz .opt:hover{background:#e9ebf7;}
+  .quiz .opt.correct{background:#e3f6e9; border-color:var(--gruen); color:#1c6b3c; font-weight:700;}
+  .quiz .opt.wrong{background:#fde7e7; border-color:#d7263d; color:#a01624;}
+  .quiz .opt.disabled{cursor:default;}
+  .quiz .fb{font-size:.9rem; margin-top:6px; min-height:1.2em;}
+  .quiz .score{font-size:1.1rem; font-weight:800; text-align:center; color:var(--indigo-d); margin-top:6px;}
+  .quiz .qbtns{display:flex; gap:10px; justify-content:center; margin-top:10px;}
+  .quiz .qbtns button{border:none;border-radius:30px;padding:9px 20px;font-weight:700;color:#fff;background:#6b7280;cursor:pointer;}
+  /* Lernlandkarte + Selbstcheck */
+  .lernkarte{background:#e8fbfa; border:1.5px solid #b8eceb; border-left:5px solid var(--teal); border-radius:14px; padding:14px 18px; margin:0 0 22px;}
+  .lernkarte h3{margin:0 0 2px; color:#0b7d7c;}
+  .lk-sub{font-size:.88rem; color:#555; margin:0 0 8px;}
+  .lk-list{list-style:none; padding:0; margin:0;}
+  .lk-item{display:flex; align-items:center; gap:10px; padding:7px 0; cursor:pointer; font-size:.95rem; border-bottom:1px dashed #cfeceb;}
+  .lk-item:last-child{border-bottom:none;}
+  .lk-box{flex:0 0 auto; width:22px; height:22px; border:2px solid var(--teal); border-radius:6px; display:inline-flex; align-items:center; justify-content:center; font-weight:800; color:#fff; background:#fff; font-size:.95rem;}
+  .lk-item.done .lk-box{background:var(--gruen); border-color:var(--gruen);}
+  .lk-item.done .lk-box::after{content:"✓";}
+  .lk-item.done .lk-txt{text-decoration:line-through; color:#7b8a89;}
+  .selfcheck{background:#fff; border:1px solid var(--linie); border-radius:16px; padding:16px 20px;}
+  .sc-leg{font-size:.85rem; color:#666; margin-bottom:8px;}
+  .sc-row{display:flex; justify-content:space-between; align-items:center; gap:12px; padding:9px 0; border-bottom:1px dashed #eee;}
+  .sc-row:last-child{border-bottom:none;}
+  .sc-amp{display:flex; gap:5px; flex:0 0 auto;}
+  .sc-amp button{background:#f3f4fb; border:1.5px solid var(--linie); border-radius:8px; font-size:1.05rem; padding:2px 8px; cursor:pointer; filter:grayscale(.7); opacity:.55;}
+  .sc-amp button.on{filter:none; opacity:1; transform:scale(1.15); border-color:#999;}
+  .foot{text-align:center; color:#9aa0b4; font-size:.82rem; margin-top:30px;}
+  @media(max-width:680px){ .alltag{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="titel">
+    <h1>🌳 KI &amp; kluge Entscheidungen: Der Entscheidungsbaum</h1>
+    <p>Wie treffen Computer und KI Entscheidungen? – Informatik, Klasse 6</p>
+    <div class="namezeile"><span>Name: ____________</span><span>Klasse: ______</span><span>Datum: ________</span></div>
+  </header>
+
+  <div class="lernkarte">
+    <h3>🗺️ Deine Lernlandkarte – das nimmst du dir heute vor</h3>
+    <p class="lk-sub">Tippe an, was du schon kannst. Am Ende prüfst du dich beim Selbst-Check noch einmal.</p>
+    <ul class="lk-list">
+      <li class="lk-item"><span class="lk-box"></span><span class="lk-txt">Ich kann erklären, was ein <b>Entscheidungsbaum</b> ist.</span></li>
+      <li class="lk-item"><span class="lk-box"></span><span class="lk-txt">Ich kann <b>Wurzel</b>, <b>Knoten</b>, <b>Ast</b> und <b>Blatt</b> benennen.</span></li>
+      <li class="lk-item"><span class="lk-box"></span><span class="lk-txt">Ich kann einen Entscheidungsbaum <b>durchlaufen</b> und einen <b>Pfad</b> finden.</span></li>
+      <li class="lk-item"><span class="lk-box"></span><span class="lk-txt">Ich kann erklären, wie eine <b>KI</b> mit solchen Fragen Dinge erkennt.</span></li>
+      <li class="lk-item"><span class="lk-box"></span><span class="lk-txt">Ich kann eine Entscheidung in <b>Scratch</b> mit „falls … dann, sonst" bauen.</span></li>
+      <li class="lk-item"><span class="lk-box"></span><span class="lk-txt">Ich kann den Unterschied zwischen einem <b>starren Baum</b> und einer <b>KI</b> erklären.</span></li>
+    </ul>
+  </div>
+
+  <!-- 1 EINSTIEG -->
+  <h2><span class="num">1</span> Entscheidungen, überall!</h2>
+  <p>Du triffst jeden Tag Hunderte Entscheidungen – oft, ohne nachzudenken. Computer und <b>KI</b> (Künstliche Intelligenz) machen das auch: Sie stellen <b>Fragen</b> und wählen je nach Antwort den nächsten Schritt.</p>
+  <div class="alltag">
+    <div class="item"><div class="ic">🌧️</div><p><b>Regnet es?</b><br>Ja → Schirm mit. Nein → ohne.</p></div>
+    <div class="item"><div class="ic">📧</div><p><b>Spam-Filter</b><br>Verdächtige Wörter? → Werbung-Ordner.</p></div>
+    <div class="item"><div class="ic">🧞</div><p><b>Akinator / 20 Fragen</b><br>Rät deine Figur durch Ja/Nein-Fragen.</p></div>
+  </div>
+  <div class="frage-box">
+    <b>Forscherfrage:</b> Wie kann ein Computer mit lauter einfachen <b>Ja/Nein-Fragen</b> am Ende eine kluge Entscheidung treffen?<br>
+    <span class="badge">Meine Vermutung</span>
+    <div class="schreiblinie"></div><div class="schreiblinie"></div>
+  </div>
+
+  <!-- 2 WAS IST EIN ENTSCHEIDUNGSBAUM -->
+  <h2><span class="num">2</span> Was ist ein Entscheidungsbaum?</h2>
+  <p>Ein <b>Entscheidungsbaum</b> ist ein Plan aus Fragen. Bei jeder Frage geht es weiter – je nach Antwort in eine andere Richtung. Am Ende steht ein <b>Ergebnis</b>.</p>
+  <p>Warum „Baum"? Weil er sich immer weiter <b>verzweigt</b> wie die Äste eines Baumes. In der Informatik zeichnet man ihn aber meistens <b>auf dem Kopf</b>: Die Wurzel ist oben, die Blätter sind unten.</p>
+
+  <div class="karte">
+    <h3>Die vier Bausteine</h3>
+    <svg class="tree" viewBox="0 0 720 300" xmlns="http://www.w3.org/2000/svg" aria-label="Beschrifteter Beispielbaum">
+      <!-- Kanten -->
+      <line x1="360" y1="55" x2="200" y2="135" stroke="#9aa0b4" stroke-width="3"/>
+      <line x1="360" y1="55" x2="520" y2="135" stroke="#9aa0b4" stroke-width="3"/>
+      <line x1="200" y1="165" x2="120" y2="240" stroke="#9aa0b4" stroke-width="3"/>
+      <line x1="200" y1="165" x2="280" y2="240" stroke="#9aa0b4" stroke-width="3"/>
+      <!-- Astbeschriftung -->
+      <text x="262" y="100" font-size="13" fill="#0b7d7c" font-weight="bold">ja</text>
+      <text x="452" y="100" font-size="13" fill="#0b7d7c" font-weight="bold">nein</text>
+      <!-- Wurzel -->
+      <g class="node"><rect x="280" y="25" width="160" height="34" rx="9" fill="#4f46e5"/><text x="360" y="47" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">Regnet es?</text></g>
+      <!-- Knoten -->
+      <g class="node"><rect x="120" y="135" width="160" height="34" rx="9" fill="#0ea5a4"/><text x="200" y="157" font-size="13" fill="#fff" text-anchor="middle" font-weight="bold">Ist es kalt?</text></g>
+      <!-- Blatt rechts -->
+      <g class="node"><ellipse cx="520" cy="152" rx="74" ry="22" fill="#2e9e5b"/><text x="520" y="157" font-size="13" fill="#fff" text-anchor="middle" font-weight="bold">☀️ ohne Schirm</text></g>
+      <!-- Blätter unten -->
+      <g class="node"><ellipse cx="120" cy="252" rx="70" ry="22" fill="#2e9e5b"/><text x="120" y="257" font-size="12.5" fill="#fff" text-anchor="middle" font-weight="bold">🧥 Jacke + Schirm</text></g>
+      <g class="node"><ellipse cx="280" cy="252" rx="62" ry="22" fill="#2e9e5b"/><text x="280" y="257" font-size="12.5" fill="#fff" text-anchor="middle" font-weight="bold">☂️ nur Schirm</text></g>
+      <!-- Labels -->
+      <text x="455" y="44" font-size="12" fill="#4f46e5" font-weight="bold">← WURZEL (Startfrage)</text>
+      <text x="300" y="128" font-size="12" fill="#0b7d7c" font-weight="bold">← KNOTEN (weitere Frage)</text>
+      <text x="150" y="200" font-size="12" fill="#9aa0b4" font-weight="bold">Äste = Antworten</text>
+      <text x="360" y="290" font-size="12" fill="#2e9e5b" font-weight="bold">BLÄTTER = Ergebnisse (keine Frage mehr)</text>
+    </svg>
+    <ul style="margin:6px 0 0; padding-left:20px; font-size:.95rem;">
+      <li>🟪 <b>Wurzel:</b> die <b>erste</b> Frage ganz oben. Hier startet jeder.</li>
+      <li>🟦 <b>Knoten:</b> jede weitere <b>Frage</b> im Baum.</li>
+      <li>➖ <b>Ast (Kante):</b> eine <b>Antwort</b> (z. B. ja / nein), die weiterführt.</li>
+      <li>🟩 <b>Blatt:</b> ein <b>Ergebnis</b> ganz unten – hier kommt keine Frage mehr.</li>
+    </ul>
+    <p style="margin-top:8px;"><b>Pfad:</b> der Weg von der Wurzel bis zu einem Blatt – also deine Kette von Antworten.</p>
+  </div>
+
+  <!-- 3 INTERAKTIV -->
+  <h2><span class="num">3</span> Probier es aus: das Tier-Ratespiel 🐾</h2>
+  <p>Denk dir ein Tier aus der Liste und beantworte die Fragen mit <b>Ja</b> oder <b>Nein</b>. Der Baum führt dich Schritt für Schritt zur Antwort. Achte darauf, wo <b>Wurzel</b>, <b>Ast</b> und <b>Blatt</b> sind!</p>
+
+  <div class="poe" data-unlock="treeStart">
+    <div class="poe-q">🔮 <b>Erst vorhersagen:</b> Wie viele Ja/Nein-Fragen braucht der Baum höchstens, um eines von 6 Tieren zu erraten?</div>
+    <div class="poe-opts">
+      <button class="poe-opt">1 Frage</button>
+      <button class="poe-opt">2–3 Fragen</button>
+      <button class="poe-opt">6 Fragen</button>
+    </div>
+    <div class="poe-after">✏️ Notiert! Spiel jetzt und zähle die Fragen auf deinem Weg mit.</div>
+  </div>
+
+  <div class="sim-box">
+    <svg id="treeMain" class="tree" viewBox="0 0 760 430" xmlns="http://www.w3.org/2000/svg"></svg>
+    <div class="frageaktuell" id="frageAktuell">Drücke „Start", um zu beginnen.</div>
+    <div class="controls">
+      <button class="btn-ja" id="btnJa" disabled>✔ Ja</button>
+      <button class="btn-nein" id="btnNein" disabled>✘ Nein</button>
+      <button class="btn-reset" id="btnStart">▶ Start</button>
+    </div>
+    <div class="status" id="status"></div>
+    <div class="legende">
+      <span><i class="sw" style="background:#4f46e5"></i> Wurzel</span>
+      <span><i class="sw" style="background:#0ea5a4"></i> Knoten (Frage)</span>
+      <span><i class="sw" style="background:#2e9e5b; border-radius:50%"></i> Blatt (Ergebnis)</span>
+      <span><i class="sw" style="background:#f59e0b"></i> dein Weg (Pfad)</span>
+    </div>
+  </div>
+
+  <div class="karte" style="margin-top:14px;">
+    <h3>🎯 Aufträge</h3>
+    <ol class="fragen">
+      <li>Spiele das Ratespiel für <b>„Hund"</b>. Schreibe deinen <b>Pfad</b> als Antwortkette auf (z. B. nein – nein – ja).
+        <div class="schreiblinie"></div>
+        <div class="hilfe-stufen">
+          <button class="hilfe-btn" type="button">Bitte etwas Hilfe <span class="cnt">(0 von 3)</span></button>
+          <div class="stufe"><b class="st-h">💡 Kleiner Tipp:</b> Starte oben bei der Wurzel und antworte für einen Hund ehrlich.</div>
+          <div class="stufe"><b class="st-h">💡 Mehr Hilfe:</b> Lebt ein Hund im Wasser? Kann er fliegen? Hat er ein Fell?</div>
+          <div class="stufe loes"><b class="st-h">✅ Lösung:</b> „Lebt es im Wasser?" → <b>nein</b>; „Kann es fliegen?" → <b>nein</b>; „Hat es ein Fell?" → <b>ja</b> → 🐕 Hund.</div>
+        </div>
+      </li>
+      <li>Welches Tier ist am <b>Blatt</b> ganz links? Wie lautet der Pfad dorthin?
+        <div class="schreiblinie"></div></li>
+      <li><b>Denk nach:</b> Warum heißt die oberste Frage „Wurzel" und nicht „Blatt"?
+        <div class="schreiblinie"></div>
+        <div class="hilfe-stufen">
+          <button class="hilfe-btn" type="button">Bitte etwas Hilfe <span class="cnt">(0 von 3)</span></button>
+          <div class="stufe"><b class="st-h">💡 Kleiner Tipp:</b> Überlege, wo jeder Weg <b>beginnt</b>.</div>
+          <div class="stufe"><b class="st-h">💡 Mehr Hilfe:</b> Aus der Wurzel wächst alles – aus ihr gehen alle Äste hervor.</div>
+          <div class="stufe loes"><b class="st-h">✅ Lösung:</b> Die Wurzel ist der <b>Start</b>: Jeder Pfad beginnt dort, und aus ihr verzweigt sich der ganze Baum. Ein Blatt ist dagegen ein <b>Ende</b> (Ergebnis).</div>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <!-- 4 KI-BEZUG -->
+  <h2><span class="num">4</span> Erlebe es selbst: Akinator 🧞</h2>
+  <div class="karte">
+    <p>Auch <b>Akinator</b> ist im Kern ein riesiger Frage-Baum: Der „Geist" errät durch viele Ja/Nein-Fragen fast jede Figur – wie unser Ratespiel oben, nur viel größer.</p>
+    <p style="text-align:center;"><a class="linkbtn" href="https://de.akinator.com/" target="_blank" rel="noopener">🧞 Akinator spielen (neuer Tab)</a></p>
+    <p><b>Beim Spielen beobachten:</b> Welche Antworten darfst du geben – nur „Ja/Nein", oder auch <b>„Weiß nicht"</b> und <b>„Wahrscheinlich"</b>? Nach wie vielen Fragen rät er richtig?</p>
+    <div class="schreiblinie"></div>
+  </div>
+
+  <h2><span class="num">5</span> Was hat das mit KI zu tun?</h2>
+  <div class="karte">
+    <p>Viele KI-Programme entscheiden genau so: Sie laufen einen (riesigen) Entscheidungsbaum durch. Ein Foto wird zum Beispiel gefragt: „Sind spitze Ohren da?", „Gibt es Schnurrhaare?", „Ist ein Schwanz da?" … bis am Blatt steht: <b>„Das ist eine Katze."</b></p>
+    <p>🧞 <b>Akinator-Trick (20 Fragen):</b> Eine gute Frage <b>halbiert</b> jedes Mal die Möglichkeiten. Mit nur <b>20</b> Ja/Nein-Fragen kann man so aus <b>über einer Million</b> Figuren die richtige finden! (1 → 2 → 4 → 8 → … nach 20 Schritten über 1 000 000.)</p>
+    <div class="infobox" style="margin-top:8px;">
+      <b>Das Besondere an KI:</b> Den Baum muss niemand mehr selbst zeichnen. Die KI <b>lernt</b> die besten Fragen aus vielen <b>Beispielen (Daten)</b> – z. B. aus tausenden Tier-Steckbriefen. Sie sucht immer die Frage, die am meisten verrät.
+    </div>
+  </div>
+  <div class="frage-box">
+    <b>Knobel:</b> Warum ist die Frage „Hat das Tier Federn?" oft besser als „Heißt das Tier Bello?", um schnell ans Ziel zu kommen?
+    <div class="schreiblinie"></div>
+    <div class="hilfe-stufen">
+      <button class="hilfe-btn" type="button">Bitte etwas Hilfe <span class="cnt">(0 von 3)</span></button>
+      <div class="stufe"><b class="st-h">💡 Kleiner Tipp:</b> Wie viele Tiere fallen bei jeder Frage weg?</div>
+      <div class="stufe"><b class="st-h">💡 Mehr Hilfe:</b> „Federn?" teilt alle Tiere in zwei große Gruppen. „Heißt es Bello?" sortiert fast nichts aus.</div>
+      <div class="stufe loes"><b class="st-h">✅ Lösung:</b> „Federn?" <b>halbiert</b> die Möglichkeiten (Vögel ↔ keine Vögel). „Heißt es Bello?" schließt nur ein einziges Tier aus – man bräuchte viel mehr Fragen.</div>
+    </div>
+  </div>
+
+  <!-- 5b UNTERSCHIED BAUM vs KI -->
+  <h2><span class="num">6</span> Unterschied: dein Baum ↔ eine KI</h2>
+  <p>Akinator wirkt klüger als unser kleines Ratespiel. Der Grund: Dahinter steckt eine <b>KI</b>. Ein Entscheidungsbaum, den <b>du selbst programmierst</b>, ist dagegen <b>starr</b>.</p>
+  <div class="vs">
+    <div class="col col-a">
+      <h3>🌳 Dein programmierter Baum = <span style="color:#b45309">starr</span></h3>
+      <ul>
+        <li>Folgt <b>genau</b> den Fragen, die du eingebaut hast – keine mehr.</li>
+        <li>Versteht nur <b>exakte</b> Antworten: „ja" ist <b>nicht</b> dasselbe wie „Ja" oder „jaa".</li>
+        <li>Kennt nur <b>ja / nein</b> – ein „weiß nicht" gibt es nicht.</li>
+        <li>Lernt nie dazu – er bleibt immer gleich.</li>
+      </ul>
+    </div>
+    <div class="col col-b">
+      <h3>🤖 Eine KI = rechnet mit <span style="color:#0b7d7c">Wahrscheinlichkeiten</span></h3>
+      <ul>
+        <li>Hat aus <b>vielen Beispielen (Daten)</b> gelernt.</li>
+        <li>Sagt nicht „sicher", sondern z. B. <b>„zu 92 % ein Hund"</b>.</li>
+        <li>Kommt mit <b>Unsicherheit</b> klar: „weiß nicht / wahrscheinlich ja".</li>
+        <li>Verzeiht kleine Fehler (Tippfehler, Groß-/Kleinschreibung) und kann <b>dazulernen</b>.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="merksatz" style="margin-top:12px;">🧠 <b>Merke:</b> Dein Scratch-Baum ist <b>starr</b> – er braucht exakte Regeln und exakte Wörter. Eine <b>KI rechnet mit Wahrscheinlichkeiten</b> und <b>lernt aus Daten</b>. Deshalb wirkt sie „intelligent".</div>
+
+  <!-- 6 SCRATCH -->
+  <h2><span class="num">7</span> Transfer: Entscheidungen in Scratch bauen</h2>
+  <p>Jetzt bauen wir einen <b>Mini-Entscheidungsbaum als Programm</b> auf <b>scratch.mit.edu</b>. Ein Computer „fragt" und entscheidet mit dem Block <b>„falls … dann, sonst"</b>.</p>
+
+  <div class="karte">
+    <h3>So findest du dich zurecht</h3>
+    <ol style="padding-left:20px; font-size:.95rem; margin:4px 0;">
+      <li>Öffne den <a href="https://scratch.mit.edu/projects/editor/?tutorial=getStarted" target="_blank" rel="noopener"><b>Scratch-Editor</b></a> (neuer Tab). Du kannst die kurze Starthilfe schließen.</li>
+      <li>Links ist die <b>Blockpalette</b> – die Blöcke sind nach <b>Farben</b> sortiert.</li>
+      <li>Ziehe die Blöcke nach rechts in den <b>Skript-Bereich</b> und steck sie zusammen.</li>
+    </ol>
+    <p style="margin:8px 0 4px; font-weight:600;">Diese Block-Farben brauchst du:</p>
+    <div class="palette">
+      <span class="pcat"><i class="pdot" style="background:#ffbf00"></i> Ereignisse (gelb)</span>
+      <span class="pcat"><i class="pdot" style="background:#5cb1d6"></i> Fühlen (hellblau)</span>
+      <span class="pcat"><i class="pdot" style="background:#59c059"></i> Operatoren (grün)</span>
+      <span class="pcat"><i class="pdot" style="background:#ffab19"></i> Steuerung (orange)</span>
+      <span class="pcat"><i class="pdot" style="background:#9966ff"></i> Aussehen (lila)</span>
+    </div>
+  </div>
+
+  <div class="karte">
+    <h3>📜 Beispiel-Skript: „Lebt dein Tier im Wasser?"</h3>
+    <div class="script">
+      <div class="sbrow"><span class="sb events">Wenn 🏳 angeklickt</span></div>
+      <div class="sbrow"><span class="sb sensing">frage <span class="sbi">Lebt dein Tier im Wasser? (ja/nein)</span> und warte</span></div>
+      <div class="sbrow"><span class="sb control">falls <span class="sb operator">&lt;<span class="sb sensing" style="padding:2px 6px">Antwort</span> = <span class="sbi">ja</span>&gt;</span> dann</span></div>
+      <div class="sbrow indent"><span class="sb looks">sage <span class="sbi">Vielleicht ein Fisch? 🐟</span></span></div>
+      <div class="sbrow"><span class="sb control">sonst</span></div>
+      <div class="sbrow indent2"><span class="sb looks">sage <span class="sbi">Dann lebt es an Land! 🐾</span></span></div>
+      <div class="sbrow"><span class="sb control">Ende</span></div>
+    </div>
+    <p style="font-size:.9rem; color:#555; margin:6px 0 0;">🔎 <b>So liest du es:</b> Das Programm <b>fragt</b> (Wurzel), prüft mit <b>„falls … = ja"</b> die Antwort (Ast) und <b>sagt</b> dann das Ergebnis (Blatt). Genau ein Entscheidungsbaum!</p>
+  </div>
+
+  <div class="karte" style="background:#fff7e6; border-color:#ffd98a;">
+    <h3 style="color:#b45309;">⚠️ Achtung – ein Baum ist starr!</h3>
+    <p>Dein Block prüft <b>„Antwort = ja"</b>. Tippt jemand <b>„Ja"</b> (groß) oder <b>„jaa"</b>, passt es nicht – das Programm nimmt dann den <i>sonst</i>-Weg, obwohl „ja" gemeint war. Eine <b>KI</b> wäre hier toleranter (sie rechnet mit Wahrscheinlichkeiten).</p>
+    <p style="margin-bottom:0;"><b>Forscher-Tipp:</b> Mit dem grünen Operator-Block <b>„… verbinde …"</b> bzw. <b>„kleingeschrieben"</b> kannst du deinen Baum etwas weniger streng machen. Probiere es aus!</p>
+  </div>
+
+  <div class="karte">
+    <h3>🛠️ Dein Auftrag in Scratch</h3>
+    <p>Baue das Skript nach. <b>Erweitere</b> es dann: Wenn das Tier <b>nicht</b> im Wasser lebt, soll es <b>weiterfragen</b>: „Kann es fliegen? (ja/nein)" – baue dafür ein zweites <b>„falls … dann, sonst"</b> in den <b>sonst</b>-Teil.</p>
+    <div class="hilfe-stufen">
+      <button class="hilfe-btn" type="button">Bitte etwas Hilfe <span class="cnt">(0 von 3)</span></button>
+      <div class="stufe"><b class="st-h">💡 Kleiner Tipp:</b> Ein „falls … dann, sonst" darf <b>in</b> ein anderes hineingesteckt werden (Verschachtelung = neue Verzweigung).</div>
+      <div class="stufe"><b class="st-h">💡 Mehr Hilfe:</b> In den unteren (sonst-)Teil ziehst du: <span class="sb sensing" style="font-size:.8rem">frage … und warte</span> + ein neues <span class="sb control" style="font-size:.8rem">falls … dann, sonst</span>.</div>
+      <div class="stufe loes"><b class="st-h">✅ Lösung (Bauplan):</b> … sonst → <b>frage</b> „Kann es fliegen?" und warte → <b>falls</b> &lt;Antwort = ja&gt; <b>dann</b> sage „Ein Vogel? 🐦" <b>sonst</b> sage „Ein Landtier! 🐕". So entsteht eine zweite Verzweigung – der Baum wird tiefer.</div>
+    </div>
+  </div>
+
+  <!-- 8 KOMPLEXE BÄUME -->
+  <h2><span class="num">8</span> Ein größerer Ratebaum (Mini-Akinator)</h2>
+  <p>So könnte ein <b>größerer</b> Ratebaum aussehen – mit mehr Fragen unterscheidet er mehr Tiere. Genau so „denkt" auch Akinator, nur mit tausenden Fragen. Folge dem Pfad!</p>
+  <div class="sim-box">
+    <svg id="treeBig" class="tree" viewBox="0 0 860 470" xmlns="http://www.w3.org/2000/svg"></svg>
+  </div>
+  <div class="frage-box" style="margin-top:12px;">
+    <b>Aufgabe:</b> Gesucht ist ein Tier, das <b>an Land lebt</b>, <b>Fell hat</b> und <b>größer als ein Hund</b> ist. Schreibe den <b>Pfad</b> von der Wurzel bis zum Blatt auf – welches Tier kommt heraus?
+    <div class="schreiblinie"></div><div class="schreiblinie"></div>
+  </div>
+  <div class="merksatz" style="margin-top:12px;">
+    💡 <b>Gut zu wissen:</b> Je mehr Fragen ein Baum hat, desto <b>genauer</b> kann er entscheiden – aber er wird auch <b>unübersichtlicher</b>. KI-Programme nutzen oft <b>viele Bäume zusammen</b> (man nennt das einen „Wald"), um besonders kluge Entscheidungen zu treffen.
+  </div>
+
+  <!-- 7 GELERNT -->
+  <h2><span class="num">9</span> Das habe ich gelernt</h2>
+  <div class="merksatz">
+    <p style="font-size:1.05rem;">🧠 <b>Merksatz – fülle die Lücken:</b></p>
+    <p style="margin:8px 0 0;">Ein <b>Entscheidungsbaum</b> trifft Entscheidungen durch eine Kette von <span class="luecke" style="display:inline-block;min-width:90px;border-bottom:2px solid #8aa;"></span>. Er beginnt an der <span class="luecke" style="display:inline-block;min-width:90px;border-bottom:2px solid #8aa;"></span> (oben), verzweigt sich an <span class="luecke" style="display:inline-block;min-width:90px;border-bottom:2px solid #8aa;"></span> entlang der <b>Äste</b> (= Antworten) und endet an einem <span class="luecke" style="display:inline-block;min-width:90px;border-bottom:2px solid #8aa;"></span> (= Ergebnis).</p>
+    <p style="margin:8px 0 0;">Eine <b>KI</b> kann die besten Fragen selbst aus <b>Daten</b> <span class="luecke" style="display:inline-block;min-width:90px;border-bottom:2px solid #8aa;"></span>. In <b>Scratch</b> baut man Entscheidungen mit dem Block <span class="luecke" style="display:inline-block;min-width:130px;border-bottom:2px solid #8aa;"></span>.</p>
+    <div class="hilfe-stufen">
+      <button class="hilfe-btn" type="button">Bitte etwas Hilfe <span class="cnt">(0 von 3)</span></button>
+      <div class="stufe"><b class="st-h">💡 Tipp – Wortspeicher:</b> Fragen · Wurzel · Knoten · Blatt · lernen · „falls … dann, sonst"</div>
+      <div class="stufe"><b class="st-h">💡 Mehr Hilfe:</b> Setze die Wörter der Reihe nach in die Lücken ein.</div>
+      <div class="stufe loes"><b class="st-h">✅ Lösung:</b> … Kette von <b>Fragen</b>. Er beginnt an der <b>Wurzel</b>, verzweigt sich an <b>Knoten</b> … endet an einem <b>Blatt</b>. Eine KI kann die Fragen aus Daten <b>lernen</b>. In Scratch baut man Entscheidungen mit <b>„falls … dann, sonst"</b>.</div>
+    </div>
+  </div>
+
+  <!-- 8 QUIZ -->
+  <h2><span class="num">10</span> Könnens-Quiz: Bist du fit?</h2>
+  <p>Klicke die richtige Antwort an – du bekommst sofort eine Rückmeldung.</p>
+  <div class="karte quiz" id="quiz"></div>
+  <p style="text-align:center; font-size:.85rem; color:#7a7f93; margin-top:8px;">💡 Tipp für die Lehrkraft: Diese Fragen lassen sich auch als <b>Kahoot!</b> übernehmen.</p>
+
+  <!-- SELBSTCHECK -->
+  <h2><span class="num">✓</span> Das kann ich jetzt</h2>
+  <p>Tippe pro Zeile eine Ampel an. So siehst du, was du sicher kannst.</p>
+  <div class="selfcheck">
+    <div class="sc-leg">🔴 = noch nicht · 🟡 = fast · 🟢 = sicher — bei 🔴/🟡 hilf dir mit den Hilfekärtchen oben.</div>
+    <div class="sc-row"><span class="sc-txt">Ich kann erklären, was ein <b>Entscheidungsbaum</b> ist.</span><span class="sc-amp"><button>🔴</button><button>🟡</button><button>🟢</button></span></div>
+    <div class="sc-row"><span class="sc-txt">Ich kann <b>Wurzel, Knoten, Ast, Blatt</b> in einem Baum zeigen.</span><span class="sc-amp"><button>🔴</button><button>🟡</button><button>🟢</button></span></div>
+    <div class="sc-row"><span class="sc-txt">Ich kann einen <b>Pfad</b> von der Wurzel zum Blatt aufschreiben.</span><span class="sc-amp"><button>🔴</button><button>🟡</button><button>🟢</button></span></div>
+    <div class="sc-row"><span class="sc-txt">Ich kann erklären, warum eine gute Frage die Möglichkeiten <b>halbiert</b>.</span><span class="sc-amp"><button>🔴</button><button>🟡</button><button>🟢</button></span></div>
+    <div class="sc-row"><span class="sc-txt">Ich kann in <b>Scratch</b> ein „falls … dann, sonst" bauen.</span><span class="sc-amp"><button>🔴</button><button>🟡</button><button>🟢</button></span></div>
+    <div class="sc-row"><span class="sc-txt">Ich kann erklären, warum eine <b>KI</b> mit <b>Wahrscheinlichkeiten</b> arbeitet und ein Baum <b>starr</b> ist.</span><span class="sc-amp"><button>🔴</button><button>🟡</button><button>🟢</button></span></div>
+  </div>
+
+  <p class="foot">Arbeitsblatt Informatik · Klasse 6 · KI &amp; Entscheidungsbäume · Wurzel–Knoten–Ast–Blatt · Scratch</p>
+</div>
+
+<script>
+/* ====================== Baum-Renderer + Tier-Ratespiel ====================== */
+(function(){
+  "use strict";
+  // Datenbaum: q=Frage; ja/nein = Kinder; leaf=Ergebnis
+  const baum = {
+    q:"Lebt es im Wasser?",
+    ja:{ q:"Hat es Flossen?",
+         ja:{leaf:"Fisch", emoji:"🐟"},
+         nein:{leaf:"Frosch", emoji:"🐸"} },
+    nein:{ q:"Kann es fliegen?",
+           ja:{ q:"Hat es Federn?",
+                ja:{leaf:"Vogel", emoji:"🐦"},
+                nein:{leaf:"Fledermaus", emoji:"🦇"} },
+           nein:{ q:"Hat es ein Fell?",
+                  ja:{leaf:"Hund", emoji:"🐕"},
+                  nein:{leaf:"Schlange", emoji:"🐍"} } }
+  };
+
+  // ---- Layout: Knoten mit x,y, Kinder, Typ ----
+  const NS="http://www.w3.org/2000/svg";
+  function buildNodes(d){
+    let leafX=0; const LH=100, COLW=92; const nodes=[]; let idc=0;
+    function rec(n, depth){
+      const me={id:idc++, depth:depth};
+      if(n.leaf!==undefined){ me.type='leaf'; me.label=(n.emoji?n.emoji+' ':'')+n.leaf; me.x=(leafX++)*COLW+60; }
+      else{
+        me.type = depth===0 ? 'root' : 'node';
+        me.label=n.q;
+        const cj=rec(n.ja, depth+1); const cn=rec(n.nein, depth+1);
+        me.children=[{edge:'ja',node:cj},{edge:'nein',node:cn}];
+        me.x=(cj.x+cn.x)/2;
+      }
+      me.y=depth*LH+34;
+      nodes.push(me); return me;
+    }
+    const root=rec(d,0);
+    return {root, nodes, width:leafX*COLW+20, height:0};
+  }
+
+  function render(svg, data, interactive){
+    const {root, nodes}=buildNodes(data);
+    const maxDepth=Math.max.apply(null,nodes.map(n=>n.depth));
+    const W=nodes.reduce((m,n)=>Math.max(m,n.x),0)+80;
+    const H=maxDepth*100+90;
+    svg.setAttribute('viewBox','0 0 '+W+' '+H);
+    svg.innerHTML='';
+    // Kanten
+    function drawEdges(n){
+      if(!n.children) return;
+      n.children.forEach(c=>{
+        const l=document.createElementNS(NS,'line');
+        l.setAttribute('x1',n.x); l.setAttribute('y1',n.y+16);
+        l.setAttribute('x2',c.node.x); l.setAttribute('y2',c.node.y-16);
+        l.setAttribute('stroke','#9aa0b4'); l.setAttribute('stroke-width','3');
+        l.setAttribute('data-edge','e'+n.id+'_'+c.node.id);
+        svg.appendChild(l);
+        const t=document.createElementNS(NS,'text');
+        t.setAttribute('x',(n.x+c.node.x)/2 + (c.edge==='ja'?-8:8));
+        t.setAttribute('y',(n.y+c.node.y)/2);
+        t.setAttribute('font-size','12'); t.setAttribute('font-weight','bold');
+        t.setAttribute('fill', c.edge==='ja' ? '#2e9e5b' : '#e0524d');
+        t.setAttribute('text-anchor','middle'); t.textContent=c.edge;
+        svg.appendChild(t);
+        drawEdges(c.node);
+      });
+    }
+    drawEdges(root);
+    // Knoten
+    nodes.forEach(n=>{
+      const g=document.createElementNS(NS,'g'); g.setAttribute('data-node','n'+n.id);
+      if(n.type==='leaf'){
+        const e=document.createElementNS(NS,'ellipse');
+        e.setAttribute('cx',n.x); e.setAttribute('cy',n.y); e.setAttribute('rx',46); e.setAttribute('ry',20);
+        e.setAttribute('fill','#2e9e5b'); g.appendChild(e);
+      }else{
+        const r=document.createElementNS(NS,'rect');
+        const w=Math.max(120, n.label.length*7.2);
+        r.setAttribute('x',n.x-w/2); r.setAttribute('y',n.y-17); r.setAttribute('width',w); r.setAttribute('height',34); r.setAttribute('rx',9);
+        r.setAttribute('fill', n.type==='root' ? '#4f46e5' : '#0ea5a4'); g.appendChild(r);
+      }
+      const t=document.createElementNS(NS,'text');
+      t.setAttribute('x',n.x); t.setAttribute('y',n.y+4); t.setAttribute('text-anchor','middle');
+      t.setAttribute('font-size','12.5'); t.setAttribute('fill','#fff'); t.setAttribute('font-weight','bold');
+      t.textContent=n.label; g.appendChild(t);
+      svg.appendChild(g);
+    });
+    return {root, nodes, svg};
+  }
+
+  // ---- Statischer großer Baum: Mini-Akinator (Tiere) ----
+  const baumBig = {
+    q:"Lebt es an Land?",
+    ja:{ q:"Hat es Fell?",
+         ja:{ q:"Größer als ein Hund?",
+              ja:{leaf:"Pferd", emoji:"🐴"},
+              nein:{leaf:"Katze", emoji:"🐱"} },
+         nein:{ q:"Kann es fliegen?",
+              ja:{leaf:"Papagei", emoji:"🦜"},
+              nein:{leaf:"Schildkröte", emoji:"🐢"} } },
+    nein:{ q:"Hat es scharfe Zähne?",
+           ja:{ q:"Sehr groß?",
+                ja:{leaf:"Hai", emoji:"🦈"},
+                nein:{leaf:"Krokodil", emoji:"🐊"} },
+           nein:{ q:"Hat es acht Arme?",
+                ja:{leaf:"Krake", emoji:"🐙"},
+                nein:{leaf:"Goldfisch", emoji:"🐠"} } }
+  };
+
+  const main = render(document.getElementById('treeMain'), baum, true);
+  render(document.getElementById('treeBig'), baumBig, false);
+
+  // ---- Interaktion Tier-Ratespiel ----
+  const elFrage=document.getElementById('frageAktuell');
+  const elStatus=document.getElementById('status');
+  const btnJa=document.getElementById('btnJa'), btnNein=document.getElementById('btnNein'), btnStart=document.getElementById('btnStart');
+  let current=null, started=false;
+
+  function clearHighlights(){
+    main.svg.querySelectorAll('[data-node] rect, [data-node] ellipse').forEach(s=>{ s.setAttribute('stroke','none'); });
+    main.svg.querySelectorAll('line').forEach(l=>{ l.setAttribute('stroke','#9aa0b4'); l.setAttribute('stroke-width','3'); });
+  }
+  function highlightNode(n, colour){
+    const g=main.svg.querySelector('[data-node="n'+n.id+'"]');
+    const shape=g.querySelector('rect,ellipse');
+    shape.setAttribute('stroke',colour); shape.setAttribute('stroke-width','4');
+  }
+  function highlightEdge(a,b){
+    const l=main.svg.querySelector('[data-edge="e'+a.id+'_'+b.id+'"]');
+    if(l){ l.setAttribute('stroke','#f59e0b'); l.setAttribute('stroke-width','5'); }
+  }
+  function setButtons(on){ btnJa.disabled=!on; btnNein.disabled=!on; }
+
+  function showNode(n){
+    current=n;
+    highlightNode(n, '#f59e0b');
+    if(n.type==='leaf'){
+      elFrage.innerHTML='🍃 Ergebnis: <b>'+n.label+'</b>';
+      elStatus.innerHTML='Du bist an einem <b style="color:#2e9e5b">BLATT</b> angekommen – das ist die Antwort! Drücke „Neu starten".';
+      setButtons(false);
+      btnStart.textContent='↺ Neu starten';
+    }else{
+      elFrage.textContent=n.label;
+      elStatus.innerHTML = n.type==='root'
+        ? 'Das hier ist die <b style="color:#4f46e5">WURZEL</b> – jeder Weg startet hier.'
+        : 'Ein <b style="color:#0ea5a4">KNOTEN</b> – beantworte die Frage.';
+      setButtons(true);
+    }
+  }
+  function choose(edge){
+    if(!current||!current.children) return;
+    const child=current.children.find(c=>c.edge===edge).node;
+    highlightEdge(current, child);
+    highlightNode(current, '#f59e0b');
+    showNode(child);
+  }
+  function start(){
+    clearHighlights(); started=true;
+    btnStart.textContent='↺ Neu starten';
+    showNode(main.root);
+  }
+  btnJa.addEventListener('click',()=>choose('ja'));
+  btnNein.addEventListener('click',()=>choose('nein'));
+  btnStart.addEventListener('click',start);
+  // Start ist erst nach Vorhersage frei (POE)
+  btnStart.disabled = true;
+  window.__enableTreeStart=function(){ btnStart.disabled=false; };
+})();
+
+/* ====================== POE ====================== */
+(function(){
+  document.querySelectorAll('.poe').forEach(p=>{
+    const unlock=p.getAttribute('data-unlock');
+    p.querySelectorAll('.poe-opt').forEach(b=>{
+      b.addEventListener('click',()=>{
+        p.querySelectorAll('.poe-opt').forEach(x=>x.classList.remove('sel'));
+        b.classList.add('sel'); p.classList.add('done');
+        if(unlock==='treeStart' && window.__enableTreeStart) window.__enableTreeStart();
+      });
+    });
+  });
+})();
+
+/* ====================== Gestufte Hilfe ====================== */
+(function(){
+  document.querySelectorAll('.hilfe-stufen').forEach(box=>{
+    const btn=box.querySelector('.hilfe-btn'); const cnt=btn.querySelector('.cnt');
+    const steps=box.querySelectorAll('.stufe'); let i=0;
+    btn.addEventListener('click',()=>{
+      if(i>=steps.length){ steps.forEach(s=>s.classList.remove('show')); i=0; btn.childNodes[0].textContent='Bitte etwas Hilfe '; }
+      else { steps[i].classList.add('show'); i++; if(i>=steps.length) btn.childNodes[0].textContent='↺ Hilfe ausblenden '; }
+      cnt.textContent='('+i+' von '+steps.length+')';
+    });
+  });
+})();
+
+/* ====================== Quiz ====================== */
+(function(){
+  const box=document.getElementById('quiz'); if(!box) return;
+  const QS=[
+    {f:"Wie nennt man die oberste Frage im Entscheidungsbaum?",
+     o:["Das Blatt","Die Wurzel","Der Ast"], a:1,
+     fb:"Die Wurzel ist die Startfrage ganz oben – dort beginnt jeder Pfad."},
+    {f:"Was steht an einem Blatt?",
+     o:["Eine weitere Frage","Ein Ergebnis (Antwort)","Der Anfang"], a:1,
+     fb:"Ein Blatt ist ein Endpunkt – das Ergebnis. Hier kommt keine Frage mehr."},
+    {f:"Was ist ein Pfad im Baum?",
+     o:["Der Weg von der Wurzel bis zu einem Blatt","Die Farbe des Baums","Ein kaputter Ast"], a:0,
+     fb:"Der Pfad ist deine Kette von Antworten von oben bis zum Ergebnis."},
+    {f:"Warum kann Akinator mit ~20 Fragen über 1 Million Figuren erraten?",
+     o:["Er rät einfach","Jede gute Frage halbiert die Möglichkeiten","Er kennt dich"], a:1,
+     fb:"Halbieren: 2,4,8,… nach 20 Schritten über eine Million – sehr schnell!"},
+    {f:"Mit welchem Scratch-Block triffst du eine Entscheidung?",
+     o:["„gehe 10er-Schritt“","„falls … dann, sonst“","„spiele Klang“"], a:1,
+     fb:"„falls … dann, sonst“ (orange, Steuerung) wählt je nach Antwort den Weg."},
+    {f:"Wie bekommt eine KI ihre Fragen für den Baum?",
+     o:["Sie würfelt sie","Sie lernt sie aus vielen Beispiel-Daten","Ein Lehrer tippt alle ein"], a:1,
+     fb:"Die KI lernt aus Daten, welche Fragen am meisten verraten."},
+    {f:"Was unterscheidet eine KI von einem starren Entscheidungsbaum?",
+     o:["Die KI rechnet mit Wahrscheinlichkeiten und lernt aus Daten","Die KI ist nur bunter","Es gibt keinen Unterschied"], a:0,
+     fb:"Ein programmierter Baum ist starr (exakte Regeln, exakte Wörter). Eine KI rechnet mit Wahrscheinlichkeiten und lernt aus Beispielen."}
+  ];
+  let answered=0, correct=0;
+  QS.forEach((q,qi)=>{
+    const d=document.createElement('div'); d.className='q';
+    const fq=document.createElement('div'); fq.className='qf'; fq.textContent=(qi+1)+'. '+q.f; d.appendChild(fq);
+    const fb=document.createElement('div'); fb.className='fb';
+    q.o.forEach((opt,oi)=>{
+      const b=document.createElement('button'); b.className='opt'; b.textContent=opt;
+      b.addEventListener('click',()=>{
+        if(d.dataset.done) return; d.dataset.done='1'; answered++;
+        d.querySelectorAll('.opt').forEach((x,xi)=>{ x.classList.add('disabled'); if(xi===q.a) x.classList.add('correct'); });
+        if(oi===q.a){ correct++; fb.style.color='#1c6b3c'; fb.textContent='✅ Richtig! '+q.fb; }
+        else { b.classList.add('wrong'); fb.style.color='#a01624'; fb.textContent='❌ Nicht ganz. '+q.fb; }
+        score();
+      });
+      d.appendChild(b);
+    });
+    d.appendChild(fb); box.appendChild(d);
+  });
+  const sc=document.createElement('div'); sc.className='score'; sc.id='qscore'; box.appendChild(sc);
+  const bt=document.createElement('div'); bt.className='qbtns';
+  const rs=document.createElement('button'); rs.textContent='↺ Neu starten'; rs.addEventListener('click',()=>location.reload());
+  bt.appendChild(rs); box.appendChild(bt);
+  function score(){
+    const s=document.getElementById('qscore');
+    if(answered<QS.length){ s.textContent='Beantwortet: '+answered+' / '+QS.length+'  ·  Richtig: '+correct; }
+    else{ const m = correct===QS.length?'🏆 Top, alles richtig!':(correct>=4?'👍 Gut gemacht!':'💪 Schau nochmal in die Hilfekärtchen.'); s.textContent='Ergebnis: '+correct+' von '+QS.length+' – '+m; }
+  }
+  score();
+})();
+
+/* ====================== Lernlandkarte + Ampel ====================== */
+(function(){
+  document.querySelectorAll('.lk-item').forEach(it=> it.addEventListener('click',()=>it.classList.toggle('done')));
+  document.querySelectorAll('.sc-amp').forEach(g=> g.querySelectorAll('button').forEach(b=> b.addEventListener('click',()=>{
+    g.querySelectorAll('button').forEach(x=>x.classList.remove('on')); b.classList.add('on');
+  })));
+})();
+</script>
+<script src="../gate.js?v=2"></script>
+</body>
+</html>
