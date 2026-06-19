@@ -179,7 +179,23 @@
   .badge{display:inline-block; background:var(--blau-l); color:var(--blau); font-size:.78rem; font-weight:700; padding:2px 10px; border-radius:20px;}
   .frage-box{background:#eef7ff; border-left:5px solid var(--blau); border-radius:8px; padding:12px 16px;}
   @media(max-width:680px){ .alltag,.exp,.cmp{grid-template-columns:1fr;} }
+
+  /* ===== Reiter-Navigation (Erweiterung) ===== */
+  .tabs{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0 18px;position:sticky;top:0;z-index:50;background:#fbf9f4;padding:8px 0;}
+  .tabs button{border:1.5px solid var(--linie);background:#fff;color:#7a6c4f;border-radius:22px;padding:8px 14px;font-weight:700;cursor:pointer;font-size:.92rem;}
+  .tabs button.on{background:var(--orange-d);border-color:var(--orange-d);color:#fff;box-shadow:0 3px 10px rgba(232,93,4,.25);}
+  .panel{display:none;}
+  .panel.on{display:block;animation:fadein .25s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:none;}}
+  .foto{margin:12px auto;max-width:560px;background:#fff;border:1px solid var(--linie);border-radius:12px;overflow:hidden;}
+  .foto img{width:100%;display:block;max-height:300px;object-fit:cover;}
+  .foto figcaption{font-size:.78rem;color:#7a6c4f;padding:7px 11px;line-height:1.4;}
+  .foto .fallback{display:none;padding:12px;font-size:.85rem;color:#7a6c4f;}
+  .foto.missing img{display:none;}.foto.missing .fallback{display:block;}
+  .alltag .item .foto{margin:0 0 6px;max-width:none;}
+  .alltag .item .foto img{height:120px;}
 </style>
+<script>window.PHOTO_EXTS=["jpg","webp","jpeg","png","JPG","WEBP","PNG"];function nextPhoto(img){var b=img.getAttribute("data-base");var f=img.closest(".foto");if(!b){if(f)f.classList.add("missing");return;}var i=parseInt(img.getAttribute("data-i")||"0",10)+1;if(i<window.PHOTO_EXTS.length){img.setAttribute("data-i",i);img.src=b+"."+window.PHOTO_EXTS[i];}else if(f){f.classList.add("missing");}}</script>
 </head>
 <body>
 <div class="wrap">
@@ -200,10 +216,21 @@
       <li class="lk-item"><span class="lk-box"></span><span class="lk-txt">Ich kann erklären, wie die <b>Temperatur</b> das Reaktions-Tempo verändert.</span></li>
       <li class="lk-item"><span class="lk-box"></span><span class="lk-txt">Ich kann erklären, warum beim Reagieren <b>kein Atom verloren geht</b>.</span></li>
       <li class="lk-item"><span class="lk-box"></span><span class="lk-txt">Ich kann erklären, was beim „<b>Durchgehen</b>" einer Reaktion passiert.</span></li>
+      <li class="lk-item"><span class="lk-box"></span><span class="lk-txt">Ich kann erklären, dass das Oberflächen-Prinzip <b>auch ohne Reaktion</b> gilt (Verdunsten).</span></li>
     </ul>
   </div>
 
-  <!-- 1 EINSTIEG -->
+  <nav class="tabs">
+    <button data-tab="1" class="on">1 · Alltag</button>
+    <button data-tab="2">2 · Versuche</button>
+    <button data-tab="3">3 · Teilchenmodell</button>
+    <button data-tab="4">4 · Mikroskop</button>
+    <button data-tab="5">5 · Überall</button>
+    <button data-tab="6">6 · Üben &amp; Check</button>
+  </nav>
+
+<section class="panel on" data-panel="1">
+<!-- 1 EINSTIEG -->
   <h2><span class="num">1</span> Das kennst du aus dem Alltag</h2>
   <p>Schau dir die drei Bilderpaare an. Jedes Mal ist es <b>derselbe Stoff</b> – einmal als <b>großes Stück</b>, einmal <b>fein zerteilt</b>. Welcher reagiert wohl schneller?</p>
   <div class="alltag">
@@ -255,7 +282,10 @@
     <div class="schreiblinie"></div><div class="schreiblinie"></div>
   </div>
 
-  <!-- 2 EXPERIMENTE -->
+  </section>
+
+<section class="panel" data-panel="2">
+<!-- 2 EXPERIMENTE -->
   <h2><span class="num">2</span> Einfache Experimente</h2>
   <p>Probiert die Versuche zu zweit aus. <b>Wichtig:</b> immer die <b>gleiche Menge</b> und (bei A & B) die <b>gleiche Wassermenge</b> nehmen – jeweils nur <b>eine</b> Sache verändern!</p>
   <div class="exp">
@@ -278,14 +308,17 @@
       <p><b>Beobachtung:</b></p><div class="schreiblinie"></div>
     </div>
     <div class="karte">
-      <h3>🔥 Versuch D – Verbrennen <span class="badge">nur Lehrkraft</span></h3>
+      <h3>🔥 Versuch D – Verbrennen</h3>
       <div class="mat"><b>Material:</b> feuerfeste Unterlage, dicker Holzspan, dünne Holzwolle, Feuerzeug. <b>Schutzbrille!</b></div>
-      <p class="schritt"><b>So geht's:</b> Die Lehrkraft entzündet zuerst die feine Holzwolle, dann das dicke Stück. Was fängt sofort Feuer?</p>
+      <p class="schritt"><b>So geht's:</b> Entzündet vorsichtig zuerst die feine Holzwolle, dann das dicke Stück. Was fängt sofort Feuer?</p>
       <p><b>Beobachtung:</b></p><div class="schreiblinie"></div>
     </div>
   </div>
 
-  <!-- 3 TEILCHENMODELL + SIM -->
+  </section>
+
+<section class="panel" data-panel="3">
+<!-- 3 TEILCHENMODELL + SIM -->
   <h2><span class="num">3</span> Warum ist das so? Das Teilchenmodell</h2>
   <div class="karte">
     <p>Eine Reaktion (Auflösen, Sprudeln, Verbrennen) passiert nur <b>an der Oberfläche</b> – dort, wo die <b>Teilchen von außen</b> (z. B. Sauerstoff-Teilchen) den Stoff <b>treffen</b>. Bei jedem Treffer wird ein winziges Stück <b>umgewandelt und weggefressen</b>.</p>
@@ -449,7 +482,10 @@
     <div class="schreiblinie"></div>
   </div>
 
-  <h3 style="text-align:center; margin-top:28px;">🔬 Bonus-Level: Das Chemiker-Mikroskop</h3>
+  </section>
+
+<section class="panel" data-panel="4">
+<h3 style="text-align:center; margin-top:28px;">🔬 Bonus-Level: Das Chemiker-Mikroskop</h3>
   <p style="text-align:center; max-width:860px; margin:6px auto 14px; font-size:.95rem;">
     Jetzt zoomen wir ganz tief in <b>ein einziges Klötzchen</b> hinein. Die <b>schwarzen</b> Kreise sind <b>Kohlenstoff-Teilchen (C)</b>, dicht gepackt – das ist der feste Stoff. Die <b>blauen</b> sind <b>Sauerstoff-Teilchen (O)</b>. Trifft ein O ein C, <b>verbinden sie sich zu CO</b> und schwirren als Gas davon. Trifft das CO später noch ein O, wird daraus <b>CO₂ (O–C–O)</b>. <b>Zähle die Kreise vorher und nachher!</b>
   </p>
@@ -500,7 +536,64 @@
     </div>
   </div>
 
-  <!-- 4 ERGEBNIS -->
+  </section>
+
+<section class="panel" data-panel="5">
+  <h2><span class="num">5</span> Das gilt überall – auch ohne Feuer</h2>
+  <div class="karte">
+    <p>Bisher ging es ums <b>Verbrennen</b> – eine <b>chemische</b> Reaktion mit Sauerstoff. Aber der Trick mit der Oberfläche steckt tiefer: Er gilt auch bei Vorgängen <b>ganz ohne Reaktion</b>, zum Beispiel beim <b>Verdunsten</b> und <b>Auflösen</b> – das ist <b>Physik</b>, keine Chemie.</p>
+    <p style="margin-bottom:0;">Die gemeinsame Regel: <b>Mehr Oberfläche → schneller.</b> Denn jeder dieser Vorgänge passiert nur dort, wo der Stoff seine Umgebung <b>berührt</b> – an der Oberfläche.</p>
+  </div>
+
+  <h3 style="text-align:center; margin-top:22px;">💧 Beispiel Verdunsten: gleiche Menge, anderes Tempo</h3>
+  <p style="text-align:center; max-width:760px; margin:6px auto 12px; font-size:.95rem;">Links <b>ein großer</b> Tropfen, rechts <b>viele kleine</b> – aber <b>genau gleich viel Wasser</b> (die Waagen zeigen dasselbe!). Drücke Start und schau auf die Uhr: Welche Seite ist zuerst trocken?</p>
+  <div class="sim-box">
+    <div class="stage" style="max-width:500px;"><canvas id="cvDrops" width="480" height="250" style="width:100%; max-width:480px; height:auto; display:block; margin:0 auto; background:#f7fbff; border:1px solid #dfe9f5; border-radius:12px;"></canvas></div>
+    <div class="controls" style="justify-content:center;">
+      <button id="dropsStart">▶ Start</button>
+      <button id="dropsReset" class="sek">↺ Neustart</button>
+    </div>
+    <div class="readouts">
+      <div class="ro uhr"><div class="zahl" id="dropsClock">0,0&nbsp;s</div><div class="lab">⏱ Stoppuhr</div></div>
+      <div class="ro hit"><div class="zahl" id="dropsSmall">– s</div><div class="lab">kleine Tropfen weg</div></div>
+      <div class="ro pct"><div class="zahl" id="dropsBig">– s</div><div class="lab">großer Tropfen weg</div></div>
+    </div>
+    <div class="hinweis" id="dropsHint">Gleicher Start auf beiden Waagen – nur das Tempo ist anders.</div>
+  </div>
+  <div class="karte infobox" style="margin-top:14px;">
+    <p style="margin:0;"><b>Warum?</b> Die Wasserteilchen <b>zappeln</b> ständig (das ist die Wärme). Nur die <b>schnellsten am Rand</b> springen in die Luft. Beim feinen Nebel ist fast jedes Teilchen am Rand → viel mehr Oberfläche → blitzschnell verdunstet.</p>
+  </div>
+
+  <h3 style="margin-top:22px;">🏠 So sieht das im Alltag aus</h3>
+  <figure class="foto">
+    <img loading="lazy" data-base="luftbefeuchter" alt="Heizkörper-Luftbefeuchter mit Filzvlies" src="luftbefeuchter.jpg" style="max-height:560px;object-fit:contain;width:auto;max-width:100%;margin:0 auto;display:block;" onerror="nextPhoto(this)">
+    <div class="fallback">📷 Lege dein Foto als <b>luftbefeuchter.jpg</b> in den Ordner Ch7_1 – dann erscheint es hier automatisch.</div>
+    <figcaption>Heizkörper-Luftbefeuchter: Ein <b>Filzvlies</b> saugt das Wasser hoch wie Löschpapier. Vlies und Gitter bieten eine <b>riesige Oberfläche</b> – das Wasser verdunstet schnell und befeuchtet die Luft. Reine Physik, ganz ohne Strom.</figcaption>
+  </figure>
+  <div class="alltag">
+    <div class="item">
+      <figure class="foto"><img loading="lazy" data-base="holzwolle" alt="Anzündholz / Holzwolle" src="holzwolle.jpg" onerror="nextPhoto(this)"><div class="fallback">📷 Foto als <b>holzwolle.jpg</b> in den Ordner Ch7_1 legen.</div></figure>
+      <p><b>Holzwolle &amp; Anzündholz</b><br>fangen sofort Feuer – Grillanzünder!</p>
+    </div>
+    <div class="item">
+      <figure class="foto"><img loading="lazy" data-base="puderzucker" alt="Puderzucker" src="puderzucker.jpg" onerror="nextPhoto(this)"><div class="fallback">📷 Foto als <b>puderzucker.jpg</b> in den Ordner Ch7_1 legen.</div></figure>
+      <p><b>Puderzucker</b><br>löst sich blitzschnell, der Würfel braucht Minuten.</p>
+    </div>
+    <div class="item" style="display:flex; flex-direction:column; justify-content:center;">
+      <p style="margin:0;"><b>🫁 Deine Lunge</b><br>Millionen winzige Bläschen = riesige Fläche, damit schnell genug Sauerstoff ins Blut kommt.</p>
+    </div>
+  </div>
+  <div class="karte" style="margin-top:6px;">
+    <p style="margin:0;"><b>Noch mehr:</b> eine zerstoßene Brausetablette sprudelt schneller · Heizkörper-Rippen geben Wärme schneller ab · eine ganze Kartoffel kühlt langsam aus, als Pommes (viel Oberfläche) sehr schnell · Mehl im Sack ist harmlos, als aufgewirbelte Staubwolke brandgefährlich.</p>
+  </div>
+
+  <div class="merksatz" style="margin-top:14px;">
+    🧠 <b>Das große Ganze:</b> Ob <b>Verdunsten</b>, <b>Auflösen</b> (Physik) oder <b>Verbrennen</b> (Chemie) – alle laufen an der <b>Oberfläche</b> ab. Darum gilt überall: <b>gleiche Menge, feiner verteilt → größere Oberfläche → schneller.</b>
+  </div>
+</section>
+
+<section class="panel" data-panel="6">
+<!-- 4 ERGEBNIS -->
   <h2><span class="num">4</span> Das habe ich gelernt</h2>
   <div class="merksatz">
     <p style="font-size:1.05rem;">🧠 <b>Merksatz – fülle die Lücken:</b></p>
@@ -549,9 +642,12 @@
     <div class="sc-row"><span class="sc-txt">Ich kann erklären, wie die <b>Temperatur</b> das Reaktions-Tempo verändert.</span><span class="sc-amp"><button>🔴</button><button>🟡</button><button>🟢</button></span></div>
     <div class="sc-row"><span class="sc-txt">Ich kann mit dem Teilchenmodell erklären, warum beim Reagieren <b>kein Atom verloren geht</b>.</span><span class="sc-amp"><button>🔴</button><button>🟡</button><button>🟢</button></span></div>
     <div class="sc-row"><span class="sc-txt">Ich kann erklären, was beim „<b>Durchgehen</b>" einer Reaktion passiert (Selbstverstärkung).</span><span class="sc-amp"><button>🔴</button><button>🟡</button><button>🟢</button></span></div>
+    <div class="sc-row"><span class="sc-txt">Ich kann erklären, dass das Oberflächen-Prinzip <b>auch beim Verdunsten</b> gilt (ohne Reaktion).</span><span class="sc-amp"><button>🔴</button><button>🟡</button><button>🟢</button></span></div>
   </div>
 
   <p style="text-align:center; color:#9a8f78; font-size:.82rem; margin-top:30px;">Arbeitsblatt Chemie · Klasse 7 · Verbrennung & Zerteilungsgrad · Teilchenmodell · Temperatur</p>
+
+</section>
 
 </div>
 
@@ -1007,6 +1103,38 @@
   });
 })();
 </script>
+<script>
+/* Reiter-Navigation */
+(function(){
+  var tb=document.querySelectorAll('.tabs button'), pn=document.querySelectorAll('.panel');
+  function show(n){n=String(n);
+    tb.forEach(function(b){b.classList.toggle('on',b.dataset.tab===n);});
+    pn.forEach(function(p){p.classList.toggle('on',p.dataset.panel===n);});
+    var t=document.querySelector('.tabs'); if(t)t.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  tb.forEach(function(b){b.addEventListener('click',function(){show(b.dataset.tab);});});
+})();
+</script>
+<script>
+/* Verdunsten: großer vs. kleine Tropfen + Uhr + Waagen */
+(function(){
+  var cv=document.getElementById('cvDrops'); if(!cv)return; var x=cv.getContext('2d');
+  var W=480,H=250,START=20,N=7;
+  var leftM,rightM,t,running,tSmall,tBig,smalls;
+  var clk=document.getElementById('dropsClock'),sm=document.getElementById('dropsSmall'),bg=document.getElementById('dropsBig'),hint=document.getElementById('dropsHint');
+  function build(){leftM=START;rightM=START;t=0;running=false;tSmall=null;tBig=null;smalls=[];for(var i=0;i<N;i++)smalls.push({x:330+(i%4)*32,y:150+Math.floor(i/4)*30});clk.textContent='0,0 s';sm.textContent='– s';bg.textContent='– s';}
+  function rr(a,b,c,d,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+c,b,a+c,b+d,r);x.arcTo(a+c,b+d,a,b+d,r);x.arcTo(a,b+d,a,b,r);x.arcTo(a,b,a+c,b,r);x.closePath();}
+  function drop(cx,cy,r){if(r<=0.5)return;x.beginPath();x.arc(cx,cy,r,0,7);x.fillStyle='#4ea0ec';x.fill();x.strokeStyle='#2f7fd0';x.lineWidth=1.4;x.stroke();x.beginPath();x.arc(cx-r*0.3,cy-r*0.3,r*0.28,0,7);x.fillStyle='rgba(255,255,255,.6)';x.fill();}
+  function scale(cx,mass,label){x.fillStyle='#aab4bf';rr(cx-46,210,92,8,3);x.fill();x.fillRect(cx-4,218,8,18);x.fillStyle='#1f2530';rr(cx-26,228,52,18,4);x.fill();x.fillStyle='#7CFC9A';x.font='700 13px Consolas,monospace';x.textAlign='center';x.fillText(Math.max(0,Math.round(mass))+' g',cx,241);x.fillStyle='#5e3c19';x.font='600 13px Segoe UI';x.fillText(label,cx,205);}
+  function clock(){var cx=240,cy=34,r=18;x.beginPath();x.arc(cx,cy,r,0,7);x.fillStyle='#fff';x.fill();x.strokeStyle='#5e3c19';x.lineWidth=2;x.stroke();var a=-Math.PI/2+(t%6)/6*2*Math.PI;x.beginPath();x.moveTo(cx,cy);x.lineTo(cx+Math.cos(a)*r*0.7,cy+Math.sin(a)*r*0.7);x.strokeStyle='#e85d04';x.lineWidth=2.5;x.stroke();}
+  function draw(){x.clearRect(0,0,W,H);x.fillStyle='#f7fbff';x.fillRect(0,0,W,H);clock();x.fillStyle='#5e3c19';x.font='700 13px Segoe UI';x.textAlign='center';x.fillText('gleiche Wassermenge – nur anders verteilt',240,66);var bR=34*Math.sqrt(Math.max(0,leftM)/START);drop(110,205-bR*0.55,bR);scale(110,leftM,'ein großer Tropfen');var sR=11*Math.sqrt(Math.max(0,rightM)/START);if(rightM>0)for(var i=0;i<smalls.length;i++)drop(smalls[i].x,smalls[i].y,sR);scale(380,rightM,'viele kleine');}
+  function loop(){if(running){var dt=1/60;t+=dt;leftM=Math.max(0,leftM-1.7*dt);rightM=Math.max(0,rightM-5.2*dt);if(rightM<=0&&tSmall===null){tSmall=t;sm.textContent=t.toFixed(1).replace('.',',')+' s';}if(leftM<=0&&tBig===null){tBig=t;bg.textContent=t.toFixed(1).replace('.',',')+' s';}clk.textContent=t.toFixed(1).replace('.',',')+' s';if(leftM<=0&&rightM<=0){running=false;hint.textContent='Beide hatten gleich viel Wasser – die kleinen waren trotzdem viel früher weg.';}draw();}requestAnimationFrame(loop);}
+  document.getElementById('dropsStart').addEventListener('click',function(){if(leftM<=0&&rightM<=0)build();running=true;hint.textContent='Schau auf die Uhr und auf beide Waagen.';});
+  document.getElementById('dropsReset').addEventListener('click',function(){build();draw();hint.textContent='';});
+  build();draw();loop();
+})();
+</script>
+
 <script src="../gate.js?v=2"></script>
 </body>
 </html>
